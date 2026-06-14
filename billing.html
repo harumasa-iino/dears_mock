@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>請求リスト — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">請求リスト</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>対象月</label>
+          <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+        </div>
+        <div class="filter-group">
+          <label>区分</label>
+          <select class="select-input"><option>全て</option><option>直営</option><option>FC</option></select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">適用</button>
+        <button class="btn-ghost">請求CSV ↓</button>
+      </div>
+
+      <div class="billing-summary">
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">集客広告費 合計</div>
+          <div class="billing-sum-val">¥1,835,000</div>
+          <div class="billing-sum-note">8店舗分</div>
+        </div>
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">求人広告費 合計</div>
+          <div class="billing-sum-val">¥342,000</div>
+          <div class="billing-sum-note">FC 5店舗分</div>
+        </div>
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">請求額 総合計</div>
+          <div class="billing-sum-val">¥2,177,000</div>
+          <div class="billing-sum-note">確定 7件 / 未確定 1件</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">請求リスト — 2025年5月</span>
+          <span class="card-count" id="billingCount">8件</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>店舗名</th><th>区分</th>
+                <th class="col-num">集客広告費</th><th class="col-num">求人広告費</th>
+                <th class="col-num">請求額合計</th><th>ステータス</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="billingTableBody"></tbody>
+            <tbody id="billingTotal"></tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 金額単位：円　|　直営店舗は求人広告費なし（本部一括管理）</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared.js?v=3"></script>
+  <script>
+    renderSidebar('billing');
+    buildBillingTable();
+  </script>
+</body>
+</html>

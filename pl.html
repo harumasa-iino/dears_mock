@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PL — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=5" />
+  <style>
+    .view-toggle {
+      display: flex;
+      background: var(--surface-3);
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+    }
+    .view-toggle-btn {
+      padding: 5px 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-3);
+      background: none;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .view-toggle-btn.active {
+      background: var(--surface-1);
+      color: var(--text-1);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    }
+    .store-select-wrap {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .store-select-wrap.visible { display: flex; }
+    .store-select-wrap label { font-size: 12px; color: var(--text-3); white-space: nowrap; }
+
+    #view-trend { display: none; }
+    #view-pl    { display: block; }
+
+    .trend-chart-wrap {
+      background: var(--surface-2);
+      border: 1px solid var(--border-mid);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .trend-chart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .trend-chart-title { font-size: 13px; font-weight: 600; color: var(--text-2); }
+    .trend-chart-legend { display: flex; gap: 14px; font-size: 11px; color: var(--text-3); }
+    .trend-chart-legend-item { display: flex; align-items: center; gap: 5px; }
+    .trend-chart-dot { width: 8px; height: 8px; border-radius: 2px; }
+    .dot-blue  { background: var(--accent); }
+    .dot-green { background: #22c55e; }
+    .dot-amber { background: #f59e0b; }
+    .trend-bars { display: flex; align-items: flex-end; gap: 12px; height: 120px; }
+    .trend-bar-col { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 4px; }
+    .trend-bar-group { display: flex; align-items: flex-end; gap: 2px; width: 100%; height: 100px; }
+    .trend-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 2px; transition: opacity .15s; }
+    .trend-bar:hover { opacity: .75; }
+    .trend-bar.b-blue  { background: var(--accent); }
+    .trend-bar.b-green { background: #22c55e; }
+    .trend-bar.b-amber { background: #f59e0b; }
+    .trend-bar.b-red   { background: var(--red); }
+    .trend-bar-month { font-size: 11px; color: var(--text-3); }
+    .trend-bar-col.current .trend-bar-month { color: var(--accent); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">PL</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+
+    <div class="page-content">
+      <!-- Filter bar -->
+      <div class="filter-bar">
+        <div class="filter-group" id="monthFilterWrap">
+          <label>年月</label>
+          <select class="select-input">
+            <option>2025年5月</option><option>2025年4月</option><option>2025年3月</option>
+          </select>
+        </div>
+        <div class="filter-group" id="areaFilterWrap">
+          <label>エリア</label>
+          <select class="select-input">
+            <option>全エリア</option><option>東京</option><option>大阪</option><option>名古屋</option>
+          </select>
+        </div>
+        <div class="filter-group" id="typeFilterWrap">
+          <label>区分</label>
+          <select class="select-input">
+            <option>全店舗</option><option>直営</option><option>FC</option>
+          </select>
+        </div>
+        <div class="store-select-wrap" id="storeSelectWrap">
+          <label>店舗</label>
+          <select class="select-input" id="trendStoreSelect" onchange="buildTrendTable()">
+            <option>表参道店</option><option>渋谷店</option><option>新宿店</option>
+            <option>大阪梅田店</option><option>名古屋栄店</option><option>心斎橋店</option>
+            <option>福岡天神店</option>
+          </select>
+        </div>
+        <div class="filter-spacer"></div>
+        <div class="view-toggle">
+          <button class="view-toggle-btn active" id="btn-pl" onclick="switchView('pl')">店舗別PL</button>
+          <button class="view-toggle-btn" id="btn-trend" onclick="switchView('trend')">月別推移</button>
+        </div>
+        <button class="btn-ghost">CSV ↓</button>
+      </div>
+
+      <!-- KPI cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">対象店舗数</div>
+          <div class="kpi-value">7<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub">直営 3 / FC 4</div>
+        </div>
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">総売上合計</div>
+          <div class="kpi-value">¥18.2<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-up">▲ 前月比 +4.8%</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">限界利益合計</div>
+          <div class="kpi-value">¥10.4<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub">限界利益率 57.1%</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">暫定利益合計</div>
+          <div class="kpi-value">¥6.4<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-down">▼ 1店舗赤字</div>
+        </div>
+      </div>
+
+      <!-- 店舗別PL -->
+      <div id="view-pl">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">店舗別 PL 一覧 — 2025年5月</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:11px;color:var(--text-3);">グループ [▸] で詳細列を展開</span>
+              <div class="legend">
+                <span class="legend-item legend-green">黒字</span>
+                <span class="legend-item legend-red">赤字</span>
+              </div>
+            </div>
+          </div>
+          <div id="plTableContainer"></div>
+        </div>
+      </div>
+
+      <!-- 月別推移 -->
+      <div id="view-trend">
+        <div class="trend-chart-wrap">
+          <div class="trend-chart-header">
+            <span class="trend-chart-title" id="trendChartTitle"></span>
+            <div class="trend-chart-legend">
+              <div class="trend-chart-legend-item"><div class="trend-chart-dot dot-blue"></div>総売上</div>
+              <div class="trend-chart-legend-item"><div class="trend-chart-dot dot-green"></div>限界利益</div>
+              <div class="trend-chart-legend-item"><div class="trend-chart-dot dot-amber"></div>暫定利益</div>
+            </div>
+          </div>
+          <div class="trend-bars" id="trendBars"></div>
+        </div>
+        <div id="trendTableContainer"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared.js?v=4"></script>
+  <script>
+    renderSidebar('pl');
+    buildPLTable();
+
+    // Separate group-expand state for trend view (independent from PL view)
+    const GRP_STATE_TR = {};
+    PL_GROUPS.forEach(g => GRP_STATE_TR[g.id] = false);
+
+    function toggleTrendGrp(grpId) {
+      GRP_STATE_TR[grpId] = !GRP_STATE_TR[grpId];
+      const show = GRP_STATE_TR[grpId];
+      document.querySelectorAll(`#view-trend [data-d="${grpId}"]`).forEach(el => {
+        el.style.display = show ? '' : 'none';
+      });
+      const btn = document.querySelector(`#view-trend [data-grbtn="${grpId}"]`);
+      if (btn) btn.textContent = show ? '▾' : '▸';
+      const th = document.querySelector(`#view-trend [data-grpth="${grpId}"]`);
+      if (th) {
+        const g = PL_GROUPS.find(g => g.id === grpId);
+        if (g) th.setAttribute('colspan', show ? g.cols.length : 1);
+      }
+    }
+
+    function switchView(mode) {
+      const isPL = mode === 'pl';
+      document.getElementById('view-pl').style.display    = isPL ? 'block' : 'none';
+      document.getElementById('view-trend').style.display = isPL ? 'none'  : 'block';
+      document.getElementById('btn-pl').classList.toggle('active', isPL);
+      document.getElementById('btn-trend').classList.toggle('active', !isPL);
+      document.getElementById('monthFilterWrap').style.display = isPL ? '' : 'none';
+      document.getElementById('areaFilterWrap').style.display  = isPL ? '' : 'none';
+      document.getElementById('typeFilterWrap').style.display  = isPL ? '' : 'none';
+      document.getElementById('storeSelectWrap').classList.toggle('visible', !isPL);
+      if (!isPL) buildTrendTable();
+    }
+
+    function buildTrendTable() {
+      const storeName = document.getElementById('trendStoreSelect').value;
+      const rawData = TREND_DATA[storeName];
+      if (!rawData) return;
+      const data = rawData.map(computeStore);
+
+      document.getElementById('trendChartTitle').textContent = storeName + ' — 売上 / 利益 推移';
+
+      // ---- Bar chart ----
+      const maxSales = Math.max(...data.map(d => d.sales));
+      const barsEl = document.getElementById('trendBars');
+      barsEl.innerHTML = '';
+      data.forEach((d, i) => {
+        const isCur = i === data.length - 1;
+        const sp = Math.max(Math.round(d.sales    / maxSales * 100), 2);
+        const mp = Math.max(Math.round(Math.max(d.marginal, 0) / maxSales * 100), 2);
+        const pp = Math.max(Math.round(Math.max(d.profit,   0) / maxSales * 100), 2);
+        const col = document.createElement('div');
+        col.className = 'trend-bar-col' + (isCur ? ' current' : '');
+        const grp = document.createElement('div');
+        grp.className = 'trend-bar-group';
+        const mkBar = (pct, cls) => {
+          const b = document.createElement('div');
+          b.className = 'trend-bar ' + cls;
+          b.style.height = pct + '%';
+          return b;
+        };
+        grp.append(mkBar(sp, 'b-blue'), mkBar(mp, 'b-green'), mkBar(pp, d.profit < 0 ? 'b-red' : 'b-amber'));
+        const lbl = document.createElement('div');
+        lbl.className = 'trend-bar-month';
+        lbl.textContent = d.month;
+        col.append(grp, lbl);
+        barsEl.appendChild(col);
+      });
+
+      // ---- Full column table (same structure as 店舗別PL, months as rows) ----
+      let h = `<div class="card"><div class="card-header">`;
+      h += `<span class="card-title">${storeName} — 月別データ詳細</span>`;
+      h += `<div style="display:flex;gap:8px;align-items:center;">`;
+      h += `<span style="font-size:11px;color:var(--text-3);">グループ [▸] で詳細列を展開</span>`;
+      h += `</div></div>`;
+      h += `<div class="table-wrap"><table class="data-table pl-tbl">`;
+
+      // Header row 1: group labels
+      h += `<thead><tr class="pl-grp-row">`;
+      h += `<th rowspan="2" class="col-sticky">月</th>`;
+      PL_GROUPS.forEach(g => {
+        h += `<th class="pl-grp-th" data-grpth="${g.id}" colspan="1">${g.label} <button class="grp-toggle-btn" data-grbtn="${g.id}" onclick="toggleTrendGrp('${g.id}')">▸</button></th>`;
+      });
+      h += `<th rowspan="2" class="col-num pl-fixed-th">固定費</th>`;
+      h += `<th colspan="4" class="pl-grp-th pl-grp-profit">📊 利益</th>`;
+      h += `<th rowspan="2" class="col-num">前月比</th>`;
+      h += `</tr>`;
+
+      // Header row 2: sub-column labels
+      h += `<tr class="pl-col-row">`;
+      PL_GROUPS.forEach(g => {
+        g.cols.forEach(c => {
+          const det = !c.summary;
+          const vis = (det && !GRP_STATE_TR[g.id]) ? ' style="display:none"' : '';
+          const dd  = det ? ` data-d="${g.id}"` : '';
+          h += `<th class="col-num"${vis}${dd}>${c.label}</th>`;
+        });
+      });
+      ['限界利益','利益率','暫定利益','利益率'].forEach(lbl => {
+        h += `<th class="col-num pl-hl-th">${lbl}</th>`;
+      });
+      h += `</tr></thead><tbody>`;
+
+      // Data rows — one per month
+      data.forEach((d, i) => {
+        const isCur = i === data.length - 1;
+        const prev  = i > 0 ? data[i - 1] : null;
+        const mom   = prev ? Math.round((d.sales - prev.sales) / prev.sales * 100) : null;
+        const momStr = mom === null ? '—' : (mom >= 0 ? `▲ +${mom}%` : `▼ ${mom}%`);
+        const momCls = mom === null ? '' : (mom >= 0 ? 'profit-pos' : 'profit-neg');
+        const rowCls = isCur ? 'row-summary' : (d.profit < 0 ? 'row-alert' : '');
+
+        h += `<tr class="${rowCls}">`;
+        h += `<td class="col-sticky pl-td-store"><strong>${d.month}</strong>${isCur ? ' <span style="font-size:10px;color:var(--accent);font-weight:600;">今月</span>' : ''}</td>`;
+
+        PL_GROUPS.forEach(g => {
+          g.cols.forEach(c => {
+            const det = !c.summary;
+            const vis = (det && !GRP_STATE_TR[g.id]) ? ' style="display:none"' : '';
+            const dd  = det ? ` data-d="${g.id}"` : '';
+            h += `<td class="col-num"${vis}${dd}>${fmtVal(d[c.id], c.fmt)}</td>`;
+          });
+        });
+
+        h += `<td class="col-num">${fmtVal(d.fixed_total, 'num')}</td>`;
+
+        [
+          { id:'marginal',      fmt:'num'  },
+          { id:'marginal_rate', fmt:'pct1' },
+          { id:'profit',        fmt:'num'  },
+          { id:'profit_rate',   fmt:'pct1' },
+        ].forEach(t => {
+          const val = d[t.id];
+          let cls = 'col-num pl-hl';
+          if (typeof val === 'number') cls += val < 0 ? ' profit-neg' : ' profit-pos';
+          h += `<td class="${cls}">${fmtVal(val, t.fmt)}</td>`;
+        });
+
+        h += `<td class="col-num ${momCls}">${momStr}</td>`;
+        h += `</tr>`;
+      });
+
+      h += `</tbody></table></div>`;
+      h += `<div class="table-note">※ 金額単位：千円　|　各グループの [▸] で詳細列を展開　|　FT=フルタイム / PAT=パートタイム / OW=オーナー</div>`;
+      h += `</div>`;
+
+      document.getElementById('trendTableContainer').innerHTML = h;
+    }
+  </script>
+</body>
+</html>

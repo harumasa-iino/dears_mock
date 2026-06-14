@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>広告データ連携 — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">広告データ連携</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>対象月</label>
+          <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+        </div>
+        <div class="filter-group">
+          <label>媒体</label>
+          <select class="select-input"><option>全て</option><option>Meta</option><option>Google</option></select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">今すぐ同期</button>
+        <button class="btn-ghost">CSV ↓</button>
+      </div>
+
+      <div class="billing-summary">
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">Meta 広告費合計</div>
+          <div class="billing-sum-val">¥1,215,000</div>
+          <div class="billing-sum-note">7店舗 / 最終取得 5/31 09:02</div>
+        </div>
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">Google 広告費合計</div>
+          <div class="billing-sum-val">¥620,000</div>
+          <div class="billing-sum-note">5店舗 / 最終取得 5/31 09:02</div>
+        </div>
+        <div class="billing-sum-card">
+          <div class="billing-sum-label">連携エラー</div>
+          <div class="billing-sum-val" style="color:var(--red)">1</div>
+          <div class="billing-sum-note">要確認：福岡天神店 Google</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">広告データ取得状況 — 2025年5月</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>店舗名</th><th>区分</th>
+                <th class="col-num">Meta 消化額</th><th>Meta 状態</th>
+                <th class="col-num">Google 消化額</th><th>Google 状態</th>
+                <th>最終取得</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>表参道店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                <td class="col-num">335,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td class="col-num">45,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+              </tr>
+              <tr>
+                <td><strong>渋谷店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                <td class="col-num">280,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td class="col-num">40,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+              </tr>
+              <tr>
+                <td><strong>大阪梅田店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num">240,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td class="col-num">65,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+              </tr>
+              <tr class="row-alert">
+                <td><strong>福岡天神店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num">120,000</td><td><span class="status-badge status-active">正常</span></td>
+                <td class="col-num" style="color:var(--red)">—</td>
+                <td><span class="status-badge status-inactive">エラー</span></td>
+                <td>5/30 09:02</td>
+                <td><div class="action-btns">
+                  <button class="btn-xs btn-xs-danger">再取得</button>
+                  <button class="btn-xs">ID確認</button>
+                </div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 毎日 09:00 に自動取得 | Meta広告セットID・Google広告キャンペーンIDは<a href="stores.html" class="link-text">店舗マスタ</a>で設定</div>
+      </div>
+    </div>
+  </main>
+  <script src="shared.js?v=3"></script>
+  <script>renderSidebar('ads');</script>
+</body>
+</html>

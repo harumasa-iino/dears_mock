@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>予算管理 — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">予算管理</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="alert-banner">
+        <span class="alert-icon">⚠</span>
+        <span>マッチング保留中の予算申請が <strong>2件</strong> あります。手動紐付けが必要です。</span>
+        <button class="btn-xs btn-alert">確認する</button>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>対象月</label>
+          <select class="select-input"><option>2025年6月</option><option selected>2025年5月</option><option>2025年4月</option></select>
+        </div>
+        <div class="filter-group">
+          <label>用途</label>
+          <select class="select-input"><option>全て</option><option>集客</option><option>求人</option></select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">適用</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">予算グリッド — 2025年5月</span>
+          <span class="tag tag-edit">直接編集可</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="col-sticky">店舗名</th><th>区分</th>
+                <th class="col-num">集客予算</th><th class="col-num">求人予算</th>
+                <th class="col-num">合計（請求額）</th><th>申請元</th><th>最終更新</th><th>ステータス</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="col-sticky">表参道店</td><td><span class="tag tag-direct">直営</span></td>
+                <td class="col-num editable" contenteditable="true">380,000</td>
+                <td class="col-num editable" contenteditable="true">—</td>
+                <td class="col-num"><strong>380,000</strong></td>
+                <td><span class="tag tag-manual">本部入力</span></td>
+                <td>5/1 本部</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr>
+                <td class="col-sticky">渋谷店</td><td><span class="tag tag-direct">直営</span></td>
+                <td class="col-num editable" contenteditable="true">320,000</td>
+                <td class="col-num editable" contenteditable="true">—</td>
+                <td class="col-num"><strong>320,000</strong></td>
+                <td><span class="tag tag-manual">本部入力</span></td>
+                <td>5/1 本部</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr>
+                <td class="col-sticky">大阪梅田店</td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num editable" contenteditable="true">280,000</td>
+                <td class="col-num editable" contenteditable="true">120,000</td>
+                <td class="col-num"><strong>400,000</strong></td>
+                <td><span class="tag tag-webhook">フォーム申請</span></td>
+                <td>4/28 オーナー</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr>
+                <td class="col-sticky">名古屋栄店</td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num editable" contenteditable="true">210,000</td>
+                <td class="col-num editable" contenteditable="true">80,000</td>
+                <td class="col-num"><strong>290,000</strong></td>
+                <td><span class="tag tag-webhook">フォーム申請</span></td>
+                <td>4/29 オーナー</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr>
+                <td class="col-sticky">心斎橋店</td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num editable" contenteditable="true">200,000</td>
+                <td class="col-num editable" contenteditable="true">77,000</td>
+                <td class="col-num"><strong>277,000</strong></td>
+                <td><span class="tag tag-webhook">フォーム申請</span></td>
+                <td>4/30 オーナー</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr>
+                <td class="col-sticky">福岡天神店</td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num editable" contenteditable="true">145,000</td>
+                <td class="col-num editable" contenteditable="true">65,000</td>
+                <td class="col-num"><strong>210,000</strong></td>
+                <td><span class="tag tag-webhook">フォーム申請</span></td>
+                <td>4/27 オーナー</td>
+                <td><span class="status-badge status-active">確定</span></td>
+              </tr>
+              <tr class="row-warn">
+                <td class="col-sticky">札幌大通店</td><td><span class="tag tag-fc">FC</span></td>
+                <td class="col-num editable" contenteditable="true">—</td>
+                <td class="col-num editable" contenteditable="true">—</td>
+                <td class="col-num">—</td>
+                <td><span class="tag" style="background:#fef3c7;color:#92400e;">未申請</span></td>
+                <td style="color:var(--text-3)">—</td>
+                <td><span class="status-badge status-pending">未確定</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 直営店は本部が直接入力 | FC店はオーナー月次フォームから自動取込 | セルをクリックで直接編集可能</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared.js?v=3"></script>
+  <script>
+    renderSidebar('budget');
+  </script>
+</body>
+</html>

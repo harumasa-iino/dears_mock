@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>店舗マスタ — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">店舗マスタ</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>ステータス</label>
+          <select class="select-input"><option>全て</option><option selected>稼働中</option><option>休止中</option></select>
+        </div>
+        <div class="filter-group">
+          <label>区分</label>
+          <select class="select-input"><option>全て</option><option>直営</option><option>FC</option></select>
+        </div>
+        <div class="search-input-wrap">
+          <label style="font-size:10.5px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">検索</label>
+          <input type="text" class="search-input" placeholder="店舗名・コードで検索..." />
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">＋ 店舗追加</button>
+        <button class="btn-ghost">CSVインポート</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">店舗マスタ一覧</span>
+          <span class="card-count" id="storesMasterCount">—</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>コード</th><th>店舗名</th><th>オーナー名</th><th>法人名</th>
+                <th>区分</th><th>エリア</th><th>ステータス</th><th>HPB URL</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="storesMasterBody"></tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 行クリックで店舗詳細を表示</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared.js?v=3"></script>
+  <script>
+    renderSidebar('stores');
+    buildStoresMaster();
+  </script>
+</body>
+</html>

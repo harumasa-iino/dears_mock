@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ダッシュボード — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">ダッシュボード</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- KPI -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">対象店舗数</div>
+          <div class="kpi-value">7<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub">直営 3 / FC 4</div>
+        </div>
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">総売上合計</div>
+          <div class="kpi-value">¥18.2<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-up">▲ 前月比 +4.8%</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">限界利益合計</div>
+          <div class="kpi-value">¥10.4<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub">限界利益率 57.1%</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">暫定利益合計</div>
+          <div class="kpi-value">¥6.4<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-down">▼ 1店舗赤字</div>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="dash-nav-grid">
+        <a href="pl.html" class="dash-nav-card dash-nav-card--blue">
+          <div class="dash-nav-icon">◈</div>
+          <div class="dash-nav-label">PL</div>
+          <div class="dash-nav-desc">店舗別損益・稼働率・生産性</div>
+          <span class="nav-badge" style="margin-top:auto;">GOAL</span>
+        </a>
+        <a href="stores.html" class="dash-nav-card">
+          <div class="dash-nav-icon">◉</div>
+          <div class="dash-nav-label">店舗マスタ</div>
+          <div class="dash-nav-desc">店舗情報・住所・固定費・広告ID</div>
+        </a>
+        <a href="billing.html" class="dash-nav-card">
+          <div class="dash-nav-icon">◇</div>
+          <div class="dash-nav-label">請求リスト</div>
+          <div class="dash-nav-desc">広告費請求・確定状況</div>
+        </a>
+        <a href="budget.html" class="dash-nav-card">
+          <div class="dash-nav-icon">◈</div>
+          <div class="dash-nav-label">予算管理</div>
+          <div class="dash-nav-desc">来月の広告予算・申請承認</div>
+        </a>
+        <a href="accounts.html" class="dash-nav-card">
+          <div class="dash-nav-icon">◎</div>
+          <div class="dash-nav-label">アカウント管理</div>
+          <div class="dash-nav-desc">ユーザー・ロール・権限</div>
+        </a>
+        <a href="ads.html" class="dash-nav-card">
+          <div class="dash-nav-icon">▣</div>
+          <div class="dash-nav-label">広告データ連携</div>
+          <div class="dash-nav-desc">Meta / Google Ads 連携状況</div>
+        </a>
+      </div>
+
+      <!-- Issues -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">要対応事項</span>
+          <span class="card-count">3件</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>店舗</th><th>内容</th><th>重要度</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>福岡天神店</strong></td>
+              <td>稼働率 48.2% — 目標 60% を大きく下回っています</td>
+              <td><span class="sev-badge sev-danger">危険</span></td>
+              <td><a href="pl.html" class="btn-xs">PL確認</a></td>
+            </tr>
+            <tr>
+              <td><strong>心斎橋店</strong></td>
+              <td>PO（プレイヤーオーナー）在籍なし</td>
+              <td><span class="sev-badge sev-warning">警告</span></td>
+              <td><a href="stores/show.html?id=FC003" class="btn-xs">店舗詳細</a></td>
+            </tr>
+            <tr>
+              <td><strong>札幌大通店・仙台一番町店</strong></td>
+              <td>5月度月次データが未入力（期限超過）</td>
+              <td><span class="sev-badge sev-warning">警告</span></td>
+              <td><a href="monthly.html" class="btn-xs">月次確認</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- External forms -->
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header"><span class="card-title">入力フォーム（外部リンク）</span></div>
+        <div style="display:flex;gap:12px;padding:16px;">
+          <a href="staff-input.html" target="_blank" class="dash-form-link">
+            <div class="dash-form-icon">📱</div>
+            <div>
+              <div style="font-weight:600;font-size:13px;">スタッフ日次入力</div>
+              <div style="font-size:11px;color:var(--text-3);margin-top:2px;">売上・客数の日次記録</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:var(--text-3);">↗</span>
+          </a>
+          <a href="owner-report.html" target="_blank" class="dash-form-link">
+            <div class="dash-form-icon">📋</div>
+            <div>
+              <div style="font-weight:600;font-size:13px;">オーナー月次報告</div>
+              <div style="font-size:11px;color:var(--text-3);margin-top:2px;">経費・固定費・予算申請</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:var(--text-3);">↗</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="shared.js?v=3"></script>
+  <script>
+    renderSidebar('dashboard');
+  </script>
+</body>
+</html>

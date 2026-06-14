@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>アカウント管理 — DEARS</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">アカウント管理</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>ロール</label>
+          <select class="select-input"><option>全て</option><option>Admin</option><option>本部</option><option>オーナー</option><option>スタッフ</option></select>
+        </div>
+        <div class="filter-group">
+          <label>ステータス</label>
+          <select class="select-input"><option>全て</option><option selected>有効</option><option>無効</option></select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">＋ アカウント追加</button>
+      </div>
+
+      <div class="acc-role-summary">
+        <div class="acc-role-card">
+          <div class="acc-role-label">Admin</div>
+          <div class="acc-role-count" id="accCount_admin">—</div>
+          <div class="acc-role-desc">全機能・システム設定</div>
+        </div>
+        <div class="acc-role-card">
+          <div class="acc-role-label">本部</div>
+          <div class="acc-role-count" id="accCount_honbu">—</div>
+          <div class="acc-role-desc">予算設定・全店閲覧</div>
+        </div>
+        <div class="acc-role-card">
+          <div class="acc-role-label">オーナー</div>
+          <div class="acc-role-count" id="accCount_owner">—</div>
+          <div class="acc-role-desc">担当店舗閲覧・月次入力</div>
+        </div>
+        <div class="acc-role-card">
+          <div class="acc-role-label">スタッフ</div>
+          <div class="acc-role-count" id="accCount_staff">—</div>
+          <div class="acc-role-desc">担当店舗日次入力のみ</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">アカウント一覧</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>名前</th><th>ロール</th><th>メールアドレス</th>
+                <th>担当店舗</th><th>ステータス</th><th>最終ログイン</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="accountsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header"><span class="card-title">ロール権限マトリクス</span></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>機能</th>
+                <th style="text-align:center">Admin</th>
+                <th style="text-align:center">本部</th>
+                <th style="text-align:center">オーナー</th>
+                <th style="text-align:center">スタッフ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>PL画面（全店）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+              <tr><td>PL画面（担当店）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td></tr>
+              <tr><td>予算設定</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+              <tr><td>請求リスト</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-partial">閲覧のみ</td><td class="perm-no">—</td></tr>
+              <tr><td>月次データ入力（オーナー）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td></tr>
+              <tr><td>日次データ入力（スタッフ）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td></tr>
+              <tr><td>店舗マスタ編集</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+              <tr><td>アカウント管理</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="shared.js?v=3"></script>
+  <script>
+    renderSidebar('accounts');
+    buildAccountsPage();
+  </script>
+</body>
+</html>

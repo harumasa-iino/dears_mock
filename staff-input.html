@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>スタッフ日次入力 — DEARS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="form-page-body">
+
+  <header class="form-topbar">
+    <div class="form-logo">
+      <div class="form-logo-icon">✦</div>
+      <div>
+        <div>DEARS</div>
+        <div class="form-subtitle">日次実績入力</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#8896a9;"><a href="index.html" style="color:#2563eb;text-decoration:none;">← 管理画面</a></div>
+  </header>
+
+  <div class="form-container">
+
+    <!-- Account Card -->
+    <div class="account-card">
+      <div class="account-avatar">田</div>
+      <div class="account-info">
+        <div class="account-name">田中 花子</div>
+        <div class="account-meta">
+          <span class="account-meta-item">🏪 大阪梅田店</span>
+          <span class="account-meta-item">👤 スタイリスト</span>
+        </div>
+      </div>
+      <a href="login.html" class="account-logout">ログアウト</a>
+    </div>
+
+    <div class="form-header">
+      <div class="form-header-title">日次実績入力</div>
+      <div class="form-header-sub">本日の実績を入力してください。送信するとPL画面に反映されます。</div>
+    </div>
+
+    <div id="formBody">
+      <!-- 入力日 -->
+      <div class="form-section">
+        <div class="form-section-title">入力日</div>
+        <div class="form-row">
+          <label class="form-label">対象日<span class="form-required">*</span></label>
+          <input type="date" class="form-input" id="inputDate" />
+        </div>
+      </div>
+
+      <!-- 売上 -->
+      <div class="form-section">
+        <div class="form-section-title">売上</div>
+        <div class="form-row">
+          <label class="form-label">技術売上<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">カット・カラー・パーマ等の施術売上</div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">物販売上</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">シャンプー・トリートメント等（なければ0）</div>
+        </div>
+      </div>
+
+      <!-- 予約・客数 -->
+      <div class="form-section">
+        <div class="form-section-title">予約・客数</div>
+        <div class="daily-grid">
+          <div class="daily-cell">
+            <label>予約件数<span class="form-required">*</span></label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+          <div class="daily-cell">
+            <label>来店客数<span class="form-required">*</span></label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+          <div class="daily-cell">
+            <label>稼働スタイリスト数</label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+          <div class="daily-cell">
+            <label>総予約枠数</label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+          <div class="daily-cell">
+            <label>新規客数</label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+          <div class="daily-cell">
+            <label>リピート客数</label>
+            <input type="number" class="form-input" placeholder="0" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- 備考 -->
+      <div class="form-section">
+        <div class="form-section-title">備考</div>
+        <div class="form-row">
+          <label class="form-label">特記事項</label>
+          <textarea class="form-textarea" placeholder="イベント・臨時休業・人員変更など特記事項があれば記入"></textarea>
+        </div>
+      </div>
+
+      <div class="form-submit-wrap">
+        <button class="form-submit" onclick="submitStaff()">送信する</button>
+        <div class="form-note">大阪梅田店 / 田中 花子 として送信されます</div>
+      </div>
+    </div>
+
+    <div class="form-success" id="staffSuccess">
+      ✅ 送信完了しました！<br>
+      <span style="font-size:12px;font-weight:400;color:#047857;margin-top:6px;display:block;">入力内容はPL画面に反映されます。お疲れ様でした。</span>
+      <button onclick="resetForm()" style="margin-top:16px;background:#fff;border:1px solid rgba(5,150,105,.3);color:#047857;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer;">続けて入力する</button>
+    </div>
+
+  </div>
+
+  <script>
+    document.getElementById('inputDate').value = new Date().toISOString().split('T')[0];
+
+    function submitStaff() {
+      document.getElementById('formBody').style.display = 'none';
+      document.getElementById('staffSuccess').style.display = 'block';
+    }
+
+    function resetForm() {
+      document.getElementById('formBody').style.display = 'block';
+      document.getElementById('staffSuccess').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

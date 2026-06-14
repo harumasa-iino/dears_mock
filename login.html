@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ログイン — DEARS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+
+  <div class="login-bg">
+    <div class="login-card">
+
+      <div class="login-header">
+        <div class="login-logo">✦</div>
+        <div class="login-title">DEARS</div>
+        <div class="login-subtitle">本部・店舗管理システム</div>
+      </div>
+
+      <div class="login-body">
+        <div class="login-field">
+          <label class="login-label">メールアドレス</label>
+          <input type="email" class="login-input" placeholder="example@dears.co.jp" id="emailInput" />
+        </div>
+        <div class="login-field">
+          <label class="login-label">パスワード</label>
+          <input type="password" class="login-input" placeholder="••••••••" id="passwordInput" />
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()">ログイン</button>
+
+        <div class="login-divider">またはデモアカウントで試す</div>
+
+        <div class="login-role-hint">
+          <button class="login-demo-btn" onclick="loginAs('admin')">
+            <div class="login-demo-label">本部</div>
+            <div class="login-demo-role">本部管理者</div>
+            <div class="login-demo-store">全店舗データ閲覧・編集</div>
+          </button>
+          <button class="login-demo-btn" onclick="loginAs('owner')">
+            <div class="login-demo-label">FCオーナー</div>
+            <div class="login-demo-role">山田 太郎</div>
+            <div class="login-demo-store">大阪梅田店</div>
+          </button>
+          <button class="login-demo-btn" onclick="loginAs('staff1')">
+            <div class="login-demo-label">スタッフ</div>
+            <div class="login-demo-role">田中 花子</div>
+            <div class="login-demo-store">大阪梅田店</div>
+          </button>
+          <button class="login-demo-btn" onclick="loginAs('staff2')">
+            <div class="login-demo-label">スタッフ</div>
+            <div class="login-demo-role">佐藤 健太</div>
+            <div class="login-demo-store">表参道店</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="login-footer">
+        © 2025 DEARS Inc. — デザインモック
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function handleLogin() {
+      const email = document.getElementById('emailInput').value;
+      if (!email) { alert('メールアドレスを入力してください'); return; }
+      // mock: admin if contains "honbu", owner if contains "owner", else staff
+      if (email.includes('owner')) loginAs('owner');
+      else if (email.includes('staff')) loginAs('staff1');
+      else loginAs('admin');
+    }
+
+    function loginAs(role) {
+      if (role === 'admin') {
+        window.location.href = 'index.html';
+      } else if (role === 'owner') {
+        window.location.href = 'owner-report.html';
+      } else {
+        window.location.href = 'staff-input.html';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>オーナー月次報告 — DEARS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="form-page-body">
+
+  <header class="form-topbar">
+    <div class="form-logo">
+      <div class="form-logo-icon">✦</div>
+      <div>
+        <div>DEARS</div>
+        <div class="form-subtitle">月次実績・経費報告</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:#8896a9;"><a href="index.html" style="color:#2563eb;text-decoration:none;">← 管理画面</a></div>
+  </header>
+
+  <div class="form-container">
+
+    <!-- Account Card -->
+    <div class="account-card">
+      <div class="account-avatar">山</div>
+      <div class="account-info">
+        <div class="account-name">山田 太郎</div>
+        <div class="account-meta">
+          <span class="account-meta-item">🏪 大阪梅田店</span>
+          <span class="account-meta-item">👤 FCオーナー</span>
+        </div>
+      </div>
+      <a href="login.html" class="account-logout">ログアウト</a>
+    </div>
+
+    <div class="form-header">
+      <div class="form-header-title">月次実績・経費報告</div>
+      <div class="form-header-sub">毎月末に入力してください。入力内容は本部のPL画面に自動反映されます。</div>
+    </div>
+
+    <div id="ownerFormBody">
+      <!-- 対象年月 -->
+      <div class="form-section">
+        <div class="form-section-title">対象年月</div>
+        <div class="form-row">
+          <label class="form-label">対象年月<span class="form-required">*</span></label>
+          <select class="form-select">
+            <option>2025年5月</option>
+            <option>2025年4月</option>
+            <option>2025年3月</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 売上実績 -->
+      <div class="form-section">
+        <div class="form-section-title">売上実績</div>
+        <div class="form-row">
+          <label class="form-label">技術売上合計<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">物販売上合計</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">総来店客数<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">名</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">稼働率（月平均）<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" max="100" step="0.1" />
+            <span class="suffix-label">%</span>
+          </div>
+          <div class="form-hint">（月の総施術件数 ÷ 月の総予約枠数）× 100</div>
+        </div>
+      </div>
+
+      <!-- 人件費 -->
+      <div class="form-section">
+        <div class="form-section-title">人件費</div>
+        <div class="form-row">
+          <label class="form-label">月間スタッフ数<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">名</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">人件費合計<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">給与・社会保険料・交通費等の合計</div>
+        </div>
+      </div>
+
+      <!-- 変動費 -->
+      <div class="form-section">
+        <div class="form-section-title">変動費</div>
+        <div class="form-row">
+          <label class="form-label">薬剤費<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">消耗品費</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 固定費 -->
+      <div class="form-section">
+        <div class="form-section-title">固定費</div>
+        <div class="form-row">
+          <label class="form-label">家賃<span class="form-required">*</span></label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">前月から変更がなければ前回入力値が自動で入ります（本実装時）</div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">水道光熱費</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">その他経費</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" />
+            <span class="suffix-label">円</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 広告予算申請 -->
+      <div class="form-section">
+        <div class="form-section-title">来月の広告予算申請</div>
+        <div class="form-row">
+          <label class="form-label">集客広告予算（来月）</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">Meta / Google Ads の集客広告予算（来月分）</div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">求人広告予算（来月）</label>
+          <div class="input-suffix">
+            <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
+            <span class="suffix-label">円</span>
+          </div>
+          <div class="form-hint">Indeed / スタッフサービス等の求人広告予算（来月分）</div>
+        </div>
+      </div>
+
+      <!-- 備考 -->
+      <div class="form-section">
+        <div class="form-section-title">備考・連絡事項</div>
+        <div class="form-row">
+          <label class="form-label">本部への連絡事項</label>
+          <textarea class="form-textarea" placeholder="設備故障・スタッフ異動・特別プロモーション等、本部に共有したい事項があれば記入"></textarea>
+        </div>
+      </div>
+
+      <div class="form-submit-wrap">
+        <button class="form-submit" onclick="submitOwner()">報告を送信する</button>
+        <div class="form-note">大阪梅田店 / 山田 太郎 として送信されます</div>
+      </div>
+    </div>
+
+    <div class="form-success" id="ownerSuccess">
+      ✅ 月次報告を受け付けました！<br>
+      <span style="font-size:12px;font-weight:400;color:#047857;margin-top:6px;display:block;">報告内容は本部で確認後、PL画面に反映されます。ご報告ありがとうございました。</span>
+    </div>
+
+  </div>
+
+  <script>
+    function submitOwner() {
+      document.getElementById('ownerFormBody').style.display = 'none';
+      document.getElementById('ownerSuccess').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

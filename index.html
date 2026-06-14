@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEARS 本部管理システム</title>
+  <link rel="stylesheet" href="style.css?v=4" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">✦</div>
+        <div><div class="logo-text">DEARS 本部管理</div></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">メイン</div>
+      <a class="nav-item active" data-page="pl" onclick="navigate('pl')">
+        <span class="nav-icon">◈</span><span>PL画面</span>
+        <span class="nav-badge">GOAL</span>
+      </a>
+
+
+      <div class="nav-section-label">マスタ管理</div>
+      <a class="nav-item" data-page="stores" onclick="navigate('stores')">
+        <span class="nav-icon">◉</span><span>店舗マスタ</span>
+      </a>
+      <a class="nav-item" data-page="accounts" onclick="navigate('accounts')">
+        <span class="nav-icon">👤</span><span>アカウント管理</span>
+      </a>
+
+      <div class="nav-section-label">予算・実績</div>
+      <a class="nav-item" data-page="budget" onclick="navigate('budget')">
+        <span class="nav-icon">◈</span><span>予算管理</span>
+      </a>
+      <a class="nav-item" data-page="billing" onclick="navigate('billing')">
+        <span class="nav-icon">◇</span><span>請求リスト</span>
+      </a>
+      <a class="nav-item" data-page="monthly" onclick="navigate('monthly')">
+        <span class="nav-icon">◎</span><span>月次データ確認</span>
+      </a>
+
+      <div class="nav-section-label">広告</div>
+      <a class="nav-item" data-page="ads" onclick="navigate('ads')">
+        <span class="nav-icon">▣</span><span>広告データ連携</span>
+      </a>
+
+      <hr class="nav-divider" />
+      <div class="nav-external-label">入力フォーム（外部）</div>
+      <a class="nav-item-external" href="staff-input.html" target="_blank">
+        <span class="nav-icon">📱</span><span>スタッフ日次入力</span>
+        <span style="margin-left:auto;font-size:10px;">↗</span>
+      </a>
+      <a class="nav-item-external" href="owner-report.html" target="_blank">
+        <span class="nav-icon">📋</span><span>オーナー月次報告</span>
+        <span style="margin-left:auto;font-size:10px;">↗</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">本</div>
+        <div>
+          <div class="user-name">本部管理者</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="pageTitle">PL画面</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ===== PL PAGE ===== -->
+      <div id="page-pl" class="page active">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>年月</label>
+            <select class="select-input">
+              <option>2025年5月</option><option>2025年4月</option><option>2025年3月</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>エリア</label>
+            <select class="select-input">
+              <option>全エリア</option><option>東京</option><option>大阪</option><option>名古屋</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>区分</label>
+            <select class="select-input">
+              <option>全店舗</option><option>直営</option><option>FC</option>
+            </select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">適用</button>
+          <button class="btn-ghost">CSV ↓</button>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-card--slate">
+            <div class="kpi-label">対象店舗数</div>
+            <div class="kpi-value">7<span class="kpi-unit">店舗</span></div>
+            <div class="kpi-sub">直営 3 / FC 4</div>
+          </div>
+          <div class="kpi-card kpi-card--blue">
+            <div class="kpi-label">総売上合計</div>
+            <div class="kpi-value">¥18.2<span class="kpi-unit">M</span></div>
+            <div class="kpi-sub kpi-up">▲ 前月比 +4.8%</div>
+          </div>
+          <div class="kpi-card kpi-card--green">
+            <div class="kpi-label">限界利益合計</div>
+            <div class="kpi-value">¥10.4<span class="kpi-unit">M</span></div>
+            <div class="kpi-sub">限界利益率 57.1%</div>
+          </div>
+          <div class="kpi-card kpi-card--amber">
+            <div class="kpi-label">暫定利益合計</div>
+            <div class="kpi-value">¥6.4<span class="kpi-unit">M</span></div>
+            <div class="kpi-sub kpi-down">▼ 1店舗赤字</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">店舗別 PL 一覧 — 2025年5月</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="font-size:11px;color:var(--text-3);">グループ [▸] で詳細列を展開</span>
+              <div class="legend">
+                <span class="legend-item legend-green">黒字</span>
+                <span class="legend-item legend-red">赤字</span>
+              </div>
+            </div>
+          </div>
+          <!-- JS-built table goes here -->
+          <div id="plTableContainer"></div>
+        </div>
+      </div>
+
+      <!-- ===== STORES PAGE ===== -->
+      <div id="page-stores" class="page">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>ステータス</label>
+            <select class="select-input"><option>全て</option><option selected>稼働中</option><option>休止中</option></select>
+          </div>
+          <div class="filter-group">
+            <label>区分</label>
+            <select class="select-input"><option>全て</option><option>直営</option><option>FC</option></select>
+          </div>
+          <div class="search-input-wrap">
+            <label style="font-size:10.5px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">検索</label>
+            <input type="text" class="search-input" placeholder="店舗名・コードで検索..." />
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">＋ 店舗追加</button>
+          <button class="btn-ghost">CSVインポート</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">店舗マスタ一覧</span>
+            <span class="card-count" id="storesMasterCount">—</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>コード</th><th>店舗名</th><th>オーナー名</th><th>法人名</th>
+                  <th>区分</th><th>エリア</th><th>ステータス</th><th>HPB URL</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="storesMasterBody"></tbody>
+            </table>
+          </div>
+          <div class="table-note">※ 行クリックで店舗詳細を表示</div>
+        </div>
+      </div>
+
+      <!-- ===== STORE DETAIL PAGE ===== -->
+      <div id="page-store-detail" class="page">
+        <div id="storeDetailContent"></div>
+      </div>
+
+      <!-- ===== ACCOUNTS PAGE ===== -->
+      <div id="page-accounts" class="page">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>ロール</label>
+            <select class="select-input"><option>全て</option><option>Admin</option><option>本部</option><option>オーナー</option><option>スタッフ</option></select>
+          </div>
+          <div class="filter-group">
+            <label>ステータス</label>
+            <select class="select-input"><option>全て</option><option selected>有効</option><option>無効</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">＋ アカウント追加</button>
+        </div>
+
+        <div class="acc-role-summary">
+          <div class="acc-role-card">
+            <div class="acc-role-label">Admin</div>
+            <div class="acc-role-count" id="accCount_admin">—</div>
+            <div class="acc-role-desc">全機能・システム設定</div>
+          </div>
+          <div class="acc-role-card">
+            <div class="acc-role-label">本部</div>
+            <div class="acc-role-count" id="accCount_honbu">—</div>
+            <div class="acc-role-desc">予算設定・全店閲覧</div>
+          </div>
+          <div class="acc-role-card">
+            <div class="acc-role-label">オーナー</div>
+            <div class="acc-role-count" id="accCount_owner">—</div>
+            <div class="acc-role-desc">担当店舗閲覧・月次入力</div>
+          </div>
+          <div class="acc-role-card">
+            <div class="acc-role-label">スタッフ</div>
+            <div class="acc-role-count" id="accCount_staff">—</div>
+            <div class="acc-role-desc">担当店舗日次入力のみ</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">アカウント一覧</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th><th>名前</th><th>ロール</th><th>メールアドレス</th>
+                  <th>担当店舗</th><th>ステータス</th><th>最終ログイン</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="accountsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <div class="card-header"><span class="card-title">ロール権限マトリクス</span></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>機能</th>
+                  <th style="text-align:center">Admin</th>
+                  <th style="text-align:center">本部</th>
+                  <th style="text-align:center">オーナー</th>
+                  <th style="text-align:center">スタッフ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>PL画面（全店）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+                <tr><td>PL画面（担当店）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td></tr>
+                <tr><td>予算設定</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+                <tr><td>請求リスト</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-partial">閲覧のみ</td><td class="perm-no">—</td></tr>
+                <tr><td>月次データ入力（オーナー）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td></tr>
+                <tr><td>日次データ入力（スタッフ）</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-yes">●</td></tr>
+                <tr><td>店舗マスタ編集</td><td class="perm-yes">●</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+                <tr><td>アカウント管理</td><td class="perm-yes">●</td><td class="perm-no">—</td><td class="perm-no">—</td><td class="perm-no">—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BUDGET PAGE ===== -->
+      <div id="page-budget" class="page">
+        <div class="alert-banner">
+          <span class="alert-icon">⚠</span>
+          <span>マッチング保留中の予算申請が <strong>2件</strong> あります。手動紐付けが必要です。</span>
+          <button class="btn-xs btn-alert">確認する</button>
+        </div>
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>対象月</label>
+            <select class="select-input"><option>2025年6月</option><option selected>2025年5月</option><option>2025年4月</option></select>
+          </div>
+          <div class="filter-group">
+            <label>用途</label>
+            <select class="select-input"><option>全て</option><option>集客</option><option>求人</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">適用</button>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">予算グリッド — 2025年5月</span>
+            <span class="tag tag-edit">直接編集可</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th class="col-sticky">店舗名</th><th>区分</th>
+                  <th class="col-num">集客予算</th><th class="col-num">求人予算</th>
+                  <th class="col-num">合計（請求額）</th><th>申請元</th><th>最終更新</th><th>ステータス</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="col-sticky">表参道店</td><td><span class="tag tag-direct">直営</span></td>
+                  <td class="col-num editable" contenteditable="true">380,000</td>
+                  <td class="col-num editable" contenteditable="true">—</td>
+                  <td class="col-num"><strong>380,000</strong></td>
+                  <td><span class="tag tag-manual">本部入力</span></td>
+                  <td>5/1 本部</td>
+                  <td><span class="status-badge status-active">確定</span></td>
+                </tr>
+                <tr>
+                  <td class="col-sticky">大阪梅田店</td><td><span class="tag tag-fc">FC</span></td>
+                  <td class="col-num editable" contenteditable="true">280,000</td>
+                  <td class="col-num editable" contenteditable="true">120,000</td>
+                  <td class="col-num"><strong>400,000</strong></td>
+                  <td><span class="tag tag-webhook">フォーム申請</span></td>
+                  <td>4/28 自動</td>
+                  <td><span class="status-badge status-active">確定</span></td>
+                </tr>
+                <tr>
+                  <td class="col-sticky">名古屋栄店</td><td><span class="tag tag-fc">FC</span></td>
+                  <td class="col-num editable" contenteditable="true">210,000</td>
+                  <td class="col-num editable" contenteditable="true">80,000</td>
+                  <td class="col-num"><strong>290,000</strong></td>
+                  <td><span class="tag tag-webhook">フォーム申請</span></td>
+                  <td>4/25 自動</td>
+                  <td><span class="status-badge status-active">確定</span></td>
+                </tr>
+                <tr class="row-pending">
+                  <td class="col-sticky"><span class="alert-dot">●</span>不明店舗</td><td>—</td>
+                  <td class="col-num">150,000</td><td class="col-num">—</td>
+                  <td class="col-num">150,000</td>
+                  <td><span class="tag tag-webhook">フォーム申請</span></td>
+                  <td>4/30 自動</td>
+                  <td><span class="status-badge status-pending">保留中</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-note">※ 集客予算・求人予算のセルは直接クリックして編集できます（変更履歴は自動記録）</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">変更履歴（直近10件）</span></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr><th>日時</th><th>店舗</th><th>用途</th><th>変更前</th><th>変更後</th><th>変更者</th><th>変更種別</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2025/05/01 10:23</td><td>表参道店</td><td>集客</td>
+                  <td class="col-num">350,000</td><td class="col-num profit-pos">380,000</td>
+                  <td>本部 管理者</td><td><span class="tag tag-manual">手動編集</span></td>
+                </tr>
+                <tr>
+                  <td>2025/04/30 09:14</td><td>名古屋栄店</td><td>求人</td>
+                  <td class="col-num">60,000</td><td class="col-num profit-pos">80,000</td>
+                  <td>自動 (Webhook)</td><td><span class="tag tag-webhook">フォーム申請</span></td>
+                </tr>
+                <tr>
+                  <td>2025/04/28 14:55</td><td>大阪梅田店</td><td>集客</td>
+                  <td class="col-num">300,000</td><td class="col-num profit-neg">280,000</td>
+                  <td>自動 (Webhook)</td><td><span class="tag tag-webhook">フォーム申請</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BILLING PAGE ===== -->
+      <div id="page-billing" class="page">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>対象月</label>
+            <select class="select-input"><option selected>2025年5月</option><option>2025年4月</option></select>
+          </div>
+          <div class="filter-group">
+            <label>区分</label>
+            <select class="select-input"><option>全て</option><option>直営</option><option>FC</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">適用</button>
+          <button class="btn-ghost">請求CSV ↓</button>
+        </div>
+
+        <div class="billing-summary">
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">集客広告費 合計</div>
+            <div class="billing-sum-val">¥1,835,000</div>
+            <div class="billing-sum-note">8店舗分</div>
+          </div>
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">求人広告費 合計</div>
+            <div class="billing-sum-val">¥342,000</div>
+            <div class="billing-sum-note">FC 5店舗分</div>
+          </div>
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">請求額 総合計</div>
+            <div class="billing-sum-val">¥2,177,000</div>
+            <div class="billing-sum-note">確定 7件 / 未確定 1件</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">請求リスト — 2025年5月</span>
+            <span class="card-count" id="billingCount">8件</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>店舗名</th><th>区分</th>
+                  <th class="col-num">集客広告費</th>
+                  <th class="col-num">求人広告費</th>
+                  <th class="col-num">請求額合計</th>
+                  <th>ステータス</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="billingTableBody"></tbody>
+              <tfoot id="billingTotal"></tfoot>
+            </table>
+          </div>
+          <div class="table-note">※ 金額単位：円　|　直営店舗は求人広告費なし（本部一括管理）</div>
+        </div>
+      </div>
+
+      <!-- ===== MONTHLY PAGE ===== -->
+      <div id="page-monthly" class="page">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>年月</label>
+            <select class="select-input"><option selected>2025年5月</option><option>2025年4月</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">適用</button>
+          <button class="btn-ghost">CSV ↓</button>
+        </div>
+        <div class="status-overview">
+          <div class="status-card status-card-green"><div class="status-num">9</div><div class="status-label">入力済み</div></div>
+          <div class="status-card status-card-yellow"><div class="status-num">2</div><div class="status-label">未入力</div></div>
+          <div class="status-card status-card-red"><div class="status-num">1</div><div class="status-label">確認待ち</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">月次データ一覧 — 2025年5月</span></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>店舗名</th><th class="col-num">スタッフ数</th>
+                  <th class="col-num">総売上</th><th class="col-num">技術売上</th><th class="col-num">物販売上</th>
+                  <th class="col-num">稼働率</th><th class="col-num">人件費</th><th class="col-num">薬剤費</th><th class="col-num">家賃</th>
+                  <th>状況</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>表参道店</td><td class="col-num">8</td>
+                  <td class="col-num">3,840</td><td class="col-num">3,210</td><td class="col-num">630</td>
+                  <td class="col-num">84.2%</td><td class="col-num">690</td><td class="col-num">220</td><td class="col-num">480</td>
+                  <td><span class="status-badge status-active">確認済</span></td>
+                  <td><button class="btn-xs">修正</button></td>
+                </tr>
+                <tr>
+                  <td>大阪梅田店</td><td class="col-num">6</td>
+                  <td class="col-num">2,680</td><td class="col-num">2,240</td><td class="col-num">440</td>
+                  <td class="col-num">70.1%</td><td class="col-num">480</td><td class="col-num">160</td><td class="col-num">320</td>
+                  <td><span class="status-badge status-active">確認済</span></td>
+                  <td><button class="btn-xs">修正</button></td>
+                </tr>
+                <tr>
+                  <td>福岡天神店</td><td class="col-num">5</td>
+                  <td class="col-num">1,420</td><td class="col-num">1,210</td><td class="col-num">210</td>
+                  <td class="col-num">48.2%</td><td class="col-num">360</td><td class="col-num">110</td><td class="col-num">250</td>
+                  <td><span class="status-badge status-review">確認待ち</span></td>
+                  <td><button class="btn-xs">確認</button></td>
+                </tr>
+                <tr class="row-empty">
+                  <td>心斎橋店</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td><span class="status-badge status-empty">未入力</span></td>
+                  <td><button class="btn-xs">催促</button></td>
+                </tr>
+                <tr class="row-empty">
+                  <td>札幌大通店</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td><span class="status-badge status-empty">未入力</span></td>
+                  <td><button class="btn-xs">催促</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ADS PAGE ===== -->
+      <div id="page-ads" class="page">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>期間</label>
+            <select class="select-input"><option selected>2025年5月（月累計）</option><option>前日（5/31）</option></select>
+          </div>
+          <div class="filter-group">
+            <label>プラットフォーム</label>
+            <select class="select-input"><option>全て</option><option>Meta</option><option>Google Ads</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">適用</button>
+        </div>
+        <div class="sync-status-bar">
+          <div class="sync-item"><span class="sync-dot sync-ok">●</span><span>Meta API — 最終同期: 本日 03:12</span></div>
+          <div class="sync-item"><span class="sync-dot sync-ok">●</span><span>Google Ads API — 最終同期: 本日 03:18</span></div>
+          <button class="btn-ghost btn-sm">手動同期</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">広告実績 × 予算比較 — 2025年5月累計</span></div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>店舗名</th><th>プラットフォーム</th>
+                  <th class="col-num">予算</th><th class="col-num">消化実績</th><th class="col-num">消化率</th>
+                  <th class="col-num">IMP</th><th class="col-num">クリック</th><th class="col-num">CTR</th><th class="col-num">CPC</th>
+                  <th>予算反映</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>表参道店</td><td><span class="tag tag-meta">Meta</span></td>
+                  <td class="col-num">200,000</td><td class="col-num">182,400</td>
+                  <td class="col-num"><div class="progress-cell"><div class="progress-bar"><div class="progress-fill progress-ok" style="width:91%"></div></div><span>91%</span></div></td>
+                  <td class="col-num">248,400</td><td class="col-num">3,210</td><td class="col-num">1.29%</td><td class="col-num">¥57</td>
+                  <td><button class="btn-xs">API反映</button></td>
+                </tr>
+                <tr>
+                  <td>表参道店</td><td><span class="tag tag-google">Google</span></td>
+                  <td class="col-num">180,000</td><td class="col-num">179,600</td>
+                  <td class="col-num"><div class="progress-cell"><div class="progress-bar"><div class="progress-fill progress-ok" style="width:99%"></div></div><span>99%</span></div></td>
+                  <td class="col-num">198,200</td><td class="col-num">4,820</td><td class="col-num">2.43%</td><td class="col-num">¥37</td>
+                  <td><button class="btn-xs">API反映</button></td>
+                </tr>
+                <tr>
+                  <td>大阪梅田店</td><td><span class="tag tag-meta">Meta</span></td>
+                  <td class="col-num">160,000</td><td class="col-num">162,800</td>
+                  <td class="col-num"><div class="progress-cell"><div class="progress-bar"><div class="progress-fill progress-over" style="width:100%"></div></div><span class="over">102%</span></div></td>
+                  <td class="col-num">194,600</td><td class="col-num">2,840</td><td class="col-num">1.46%</td><td class="col-num">¥57</td>
+                  <td><button class="btn-xs">API反映</button></td>
+                </tr>
+                <tr>
+                  <td>福岡天神店</td><td><span class="tag tag-meta">Meta</span></td>
+                  <td class="col-num">100,000</td><td class="col-num">98,400</td>
+                  <td class="col-num"><div class="progress-cell"><div class="progress-bar"><div class="progress-fill progress-warn" style="width:98%"></div></div><span>98%</span></div></td>
+                  <td class="col-num">142,100</td><td class="col-num">1,620</td><td class="col-num">1.14%</td><td class="col-num">¥61</td>
+                  <td><button class="btn-xs">API反映</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </main>
+
+  <!-- ===== TREND MODAL ===== -->
+  <div class="modal-overlay" id="trendModal" onclick="closeTrendOnOverlay(event)">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="trendModalTitle"></div>
+          <div class="modal-sub">直近6ヶ月（単位：千円）</div>
+        </div>
+        <button class="modal-close" onclick="closeTrend()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="chart-section">
+          <div class="chart-label">売上 / 限界利益 / 暫定利益</div>
+          <div class="bar-chart" id="trendChart"></div>
+          <div class="chart-legend">
+            <div class="chart-legend-item"><div class="chart-legend-dot dot-blue"></div>総売上</div>
+            <div class="chart-legend-item"><div class="chart-legend-dot dot-green"></div>限界利益</div>
+            <div class="chart-legend-item"><div class="chart-legend-dot dot-red"></div>暫定利益</div>
+          </div>
+        </div>
+        <div class="card-header" style="border-radius:8px 8px 0 0;">
+          <span class="card-title">月別データ詳細</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="trendTable">
+            <thead>
+              <tr>
+                <th>月</th>
+                <th class="col-num">総売上</th>
+                <th class="col-num">稼働率</th>
+                <th class="col-num">変動費計</th>
+                <th class="col-num">固定費計</th>
+                <th class="col-num">限界利益</th>
+                <th class="col-num">暫定利益</th>
+                <th class="col-num">前月比</th>
+              </tr>
+            </thead>
+            <tbody id="trendTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=4"></script>
+</body>
+</html>

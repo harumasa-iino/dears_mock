@@ -30,9 +30,7 @@ function renderSidebar(activeKey) {
     } else {
       const cls = item.key === activeKey ? ' active' : '';
       const badge = item.badge ? `<span class="nav-badge">${item.badge}</span>` : '';
-      navHTML += `<a class="nav-item${cls}" href="${item.href}">
-        <span class="nav-icon">${item.icon}</span><span>${item.label}</span>${badge}
-      </a>`;
+      navHTML += `<a class="nav-item${cls}" href="${item.href}">${item.label}${badge}</a>`;
     }
   }
   const html = `<aside class="sidebar">

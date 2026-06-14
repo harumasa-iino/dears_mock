@@ -121,7 +121,7 @@
       </div>
 
       <!-- KPI cards -->
-      <div class="kpi-grid">
+      <div class="kpi-grid" id="kpiGrid">
         <div class="kpi-card kpi-card--slate">
           <div class="kpi-label">対象店舗数</div>
           <div class="kpi-value">7<span class="kpi-unit">店舗</span></div>
@@ -179,7 +179,7 @@
     </div>
   </main>
 
-  <script src="shared.js?v=4"></script>
+  <script src="shared.js?v=5"></script>
   <script>
     renderSidebar('pl');
     buildPLTable();
@@ -213,6 +213,7 @@
       document.getElementById('areaFilterWrap').style.display  = isPL ? '' : 'none';
       document.getElementById('typeFilterWrap').style.display  = isPL ? '' : 'none';
       document.getElementById('storeSelectWrap').classList.toggle('visible', !isPL);
+      document.getElementById('kpiGrid').style.display = isPL ? '' : 'none';
       if (!isPL) buildTrendTable();
     }
 

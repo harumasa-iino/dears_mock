@@ -15,9 +15,8 @@ const NAV_ITEMS = [
   { key: 'stores',    label: '店舗マスタ',     icon: '◉', href: `${B}stores.html` },
   { key: 'accounts',  label: 'アカウント管理', icon: '◎', href: `${B}accounts.html` },
   { section: '予算・実績' },
-  { key: 'budget',    label: '予算管理',       icon: '◈', href: `${B}budget.html` },
-  { key: 'billing',   label: '請求リスト',     icon: '◇', href: `${B}billing.html` },
-  { key: 'monthly',   label: '月次データ確認', icon: '◎', href: `${B}monthly.html` },
+  { key: 'budget',    label: '予算管理',       href: `${B}budget.html` },
+  { key: 'monthly',   label: '月次データ確認', href: `${B}monthly.html` },
   { section: '広告' },
   { key: 'ads',       label: '広告データ連携', icon: '▣', href: `${B}ads.html` },
 ];

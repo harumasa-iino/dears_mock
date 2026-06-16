@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>月次報告 — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .form-card {
+      background: var(--surface-1);
+      border: 1px solid var(--border-mid);
+      border-radius: 12px;
+      padding: 0;
+      overflow: hidden;
+      max-width: 640px;
+    }
+    .form-card-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .form-card-section:last-child { border-bottom: none; }
+    .form-section-title {
+      font-size: 12px; font-weight: 700; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 14px;
+    }
+    .form-row { margin-bottom: 14px; }
+    .form-row:last-child { margin-bottom: 0; }
+    .form-label {
+      display: block; font-size: 13px; font-weight: 500;
+      color: var(--text-2); margin-bottom: 6px;
+    }
+    .form-required { color: var(--red); margin-left: 3px; }
+    .form-hint { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+    .form-input, .form-select {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border-mid);
+      border-radius: 7px; font-size: 14px; background: var(--bg);
+      color: var(--text-1); outline: none; box-sizing: border-box;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+    .form-textarea {
+      width: 100%; padding: 8px 12px; border: 1px solid var(--border-mid);
+      border-radius: 7px; font-size: 13px; background: var(--bg);
+      color: var(--text-1); outline: none; resize: vertical; min-height: 80px;
+      box-sizing: border-box; font-family: inherit;
+    }
+    .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+    .input-suffix { display: flex; align-items: center; gap: 8px; }
+    .input-suffix .form-input { flex: 1; }
+    .suffix-label { font-size: 13px; color: var(--text-3); white-space: nowrap; }
+    .budget-notice {
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 12px; color: #1e40af;
+      margin-bottom: 14px;
+    }
+    .form-success-card {
+      background: #ecfdf5; border: 1px solid #a7f3d0;
+      border-radius: 12px; padding: 32px 24px; text-align: center;
+      max-width: 640px; display: none;
+    }
+    .form-success-icon { font-size: 40px; margin-bottom: 12px; }
+    .form-success-title { font-size: 18px; font-weight: 700; color: #047857; margin-bottom: 6px; }
+    .form-success-sub { font-size: 13px; color: #065f46; }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">月次報告</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+
+      <div class="account-card" style="max-width:640px;margin-bottom:16px;">
+        <div class="account-avatar">山</div>
+        <div class="account-info">
+          <div class="account-name">山田 太郎</div>
+          <div class="account-meta">
+            <span class="account-meta-item">🏪 大阪梅田店</span>
+            <span class="account-meta-item">👤 FCオーナー</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="formBody">
+        <div class="form-card">
+
+          <!-- 対象年月 -->
+          <div class="form-card-section">
+            <div class="form-section-title">対象年月</div>
+            <div class="form-row">
+              <label class="form-label">対象年月<span class="form-required">*</span></label>
+              <select class="form-select" style="max-width:200px;">
+                <option>2025年5月</option>
+                <option>2025年4月</option>
+                <option>2025年3月</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 売上実績 -->
+          <div class="form-card-section">
+            <div class="form-section-title">売上実績</div>
+            <div class="form-row">
+              <label class="form-label">技術売上合計<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">物販売上合計</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">総来店客数<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">名</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">稼働率（月平均）<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" max="100" step="0.1" />
+                <span class="suffix-label">%</span>
+              </div>
+              <div class="form-hint">（月の総施術件数 ÷ 月の総予約枠数）× 100</div>
+            </div>
+          </div>
+
+          <!-- 人件費 -->
+          <div class="form-card-section">
+            <div class="form-section-title">人件費</div>
+            <div class="form-row">
+              <label class="form-label">月間スタッフ数<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" style="max-width:120px;" />
+                <span class="suffix-label">名</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">人件費合計<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+              <div class="form-hint">給与・社会保険料・交通費等の合計</div>
+            </div>
+          </div>
+
+          <!-- 変動費 -->
+          <div class="form-card-section">
+            <div class="form-section-title">変動費</div>
+            <div class="form-row">
+              <label class="form-label">薬剤費<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">消耗品費</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 固定費 -->
+          <div class="form-card-section">
+            <div class="form-section-title">固定費</div>
+            <div class="form-row">
+              <label class="form-label">家賃<span class="form-required">*</span></label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+              <div class="form-hint">前月から変更がなければ前回入力値が自動で入ります（本実装時）</div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">水道光熱費</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">その他経費</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" />
+                <span class="suffix-label">円</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 広告予算申請 -->
+          <div class="form-card-section">
+            <div class="form-section-title">来月の広告予算申請</div>
+            <div class="budget-notice">
+              ℹ 申請期日は毎月<strong>25日</strong>です。期日を過ぎた場合は前月の予算が自動適用されます。
+            </div>
+            <div class="form-row">
+              <label class="form-label">集客広告予算（来月）</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
+                <span class="suffix-label">円</span>
+              </div>
+              <div class="form-hint">Meta / Google Ads の集客広告予算（来月分）</div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">求人広告予算（来月）</label>
+              <div class="input-suffix">
+                <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
+                <span class="suffix-label">円</span>
+              </div>
+              <div class="form-hint">Indeed / スタッフサービス等の求人広告予算（来月分）</div>
+            </div>
+          </div>
+
+          <!-- 備考 -->
+          <div class="form-card-section">
+            <div class="form-section-title">備考・連絡事項</div>
+            <div class="form-row">
+              <label class="form-label">本部への連絡事項</label>
+              <textarea class="form-textarea" placeholder="設備故障・スタッフ異動・特別プロモーション等、本部に共有したい事項があれば記入"></textarea>
+            </div>
+          </div>
+
+          <!-- 送信 -->
+          <div class="form-card-section" style="background:var(--surface-2);">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <button class="btn-primary" onclick="submitForm()" style="padding:10px 28px;font-size:14px;">報告を送信する</button>
+              <span style="font-size:12px;color:var(--text-3);">大阪梅田店 / 山田 太郎 として送信されます</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-success-card" id="successCard">
+        <div class="form-success-icon">✅</div>
+        <div class="form-success-title">月次報告を受け付けました！</div>
+        <div class="form-success-sub">報告内容は本部で確認後、PL画面に反映されます。ご報告ありがとうございました。</div>
+        <a href="index.html" class="btn-ghost" style="margin-top:20px;display:inline-block;">ホームに戻る</a>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="shared.js"></script>
+  <script>
+    renderStoreSidebar('monthly');
+    function submitForm() {
+      document.getElementById('formBody').style.display = 'none';
+      document.getElementById('successCard').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

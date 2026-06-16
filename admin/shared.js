@@ -1,8 +1,13 @@
 // ===================================================
-// PATH & BASE DETECTION
+// PATH & BASE DETECTION (admin/ aware)
 // ===================================================
-const IS_SUBDIR = window.location.pathname.split('/').filter(Boolean).length > 2;
-const B = IS_SUBDIR ? '../' : '';
+(function() {
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  const adminIdx = parts.findIndex(p => p === 'admin');
+  const depth = adminIdx >= 0 ? parts.length - adminIdx - 2 : 0;
+  window.B = depth > 0 ? '../'.repeat(depth) : '';
+})();
+const B = window.B;
 
 // ===================================================
 // ROLE (mock demo switcher)
@@ -17,8 +22,6 @@ function setCurrentRole(role) {
 const ROLE_SWITCHER_OPTIONS = [
   { value: 'honbu-edit', label: '本部（編集）' },
   { value: 'honbu-view', label: '本部（閲覧）' },
-  { value: 'owner',      label: 'オーナー' },
-  { value: 'staff',      label: 'スタッフ' },
 ];
 
 // ===================================================
@@ -67,26 +70,23 @@ function renderSidebar(activeKey) {
     <nav class="sidebar-nav">
       ${navHTML}
       <hr class="nav-divider" />
-      <div class="nav-external-label">入力フォーム（外部）</div>
-      <a class="nav-item-external" href="${B}staff-input.html" target="_blank">
-        <span class="nav-icon">📱</span><span>スタッフ日次入力</span>
-        <span style="margin-left:auto;font-size:10px;">↗</span>
-      </a>
-      <a class="nav-item-external" href="${B}owner-report.html" target="_blank">
-        <span class="nav-icon">📋</span><span>オーナー月次報告</span>
+      <div class="nav-external-label">店舗向けアプリ</div>
+      <a class="nav-item-external" href="${B}../store/" target="_blank">
+        <span class="nav-icon">🏪</span><span>店舗入力アプリ</span>
         <span style="margin-left:auto;font-size:10px;">↗</span>
       </a>
     </nav>
     <div class="sidebar-footer">
-      <div class="user-info" style="flex-direction:column;align-items:flex-start;gap:8px;padding:10px 14px;">
-        <div style="display:flex;align-items:center;gap:8px;width:100%;">
+      <div style="border-top:1px solid var(--border-mid);">
+        <a class="user-info user-info-link" href="${B}mypage.html" style="display:flex;align-items:center;gap:8px;padding:12px 14px 8px;text-decoration:none;">
           <div class="user-avatar">${avatarChar}</div>
-          <div>
+          <div style="flex:1;min-width:0;">
             <div class="user-name">${roleLabel}</div>
             <div class="user-role">ログイン中</div>
           </div>
-        </div>
-        <div style="width:100%;">
+          <span class="user-info-arrow">›</span>
+        </a>
+        <div style="padding:0 14px 10px;">
           <div style="font-size:10px;color:var(--text-3);margin-bottom:4px;">デモ：ロール切替</div>
           <select class="select-input" style="width:100%;font-size:12px;" onchange="setCurrentRole(this.value)">
             ${roleSwitcherOpts}
@@ -619,6 +619,7 @@ function buildStoreDetail() {
       <a href="${B}stores.html" class="btn-ghost">← 店舗マスタ一覧に戻る</a>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
         ${stsBadge} ${typeTag}
+        <a class="btn-ghost" href="${B}../store/" target="_blank">🏪 店舗アプリを開く ↗</a>
         <button class="btn-primary" onclick="alert('編集モード（本実装時）')">✎ 編集</button>
       </div>
     </div>

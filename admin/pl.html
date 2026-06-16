@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PL — DEARS</title>
-  <link rel="stylesheet" href="style.css?v=5" />
+  <link rel="stylesheet" href="../style.css?v=5" />
   <style>
     .view-toggle {
       display: flex;
@@ -150,7 +150,7 @@
           <div class="card-header">
             <span class="card-title">店舗別 PL 一覧 — 2025年5月</span>
             <div style="display:flex;gap:8px;align-items:center;">
-              <span style="font-size:11px;color:var(--text-3);">グループ [▸] で詳細列を展開</span>
+              <span style="font-size:11px;color:var(--text-3);">項目グループ行の [▸] で詳細行を展開</span>
               <div class="legend">
                 <span class="legend-item legend-green">黒字</span>
                 <span class="legend-item legend-red">赤字</span>
@@ -191,16 +191,13 @@
     function toggleTrendGrp(grpId) {
       GRP_STATE_TR[grpId] = !GRP_STATE_TR[grpId];
       const show = GRP_STATE_TR[grpId];
-      document.querySelectorAll(`#view-trend [data-d="${grpId}"]`).forEach(el => {
+      const tbl = document.getElementById('trendTable');
+      if (!tbl) return;
+      tbl.querySelectorAll(`[data-d="${grpId}"]`).forEach(el => {
         el.style.display = show ? '' : 'none';
       });
-      const btn = document.querySelector(`#view-trend [data-grbtn="${grpId}"]`);
+      const btn = tbl.querySelector(`[data-grbtn="${grpId}"]`);
       if (btn) btn.textContent = show ? '▾' : '▸';
-      const th = document.querySelector(`#view-trend [data-grpth="${grpId}"]`);
-      if (th) {
-        const g = PL_GROUPS.find(g => g.id === grpId);
-        if (g) th.setAttribute('colspan', show ? g.cols.length : 1);
-      }
     }
 
     function switchView(mode) {
@@ -252,81 +249,89 @@
         barsEl.appendChild(col);
       });
 
-      // ---- Full column table (same structure as 店舗別PL, months as rows) ----
+      // ---- 転置テーブル（行=項目、列=月） ----
       let h = `<div class="card"><div class="card-header">`;
       h += `<span class="card-title">${storeName} — 月別データ詳細</span>`;
-      h += `<div style="display:flex;gap:8px;align-items:center;">`;
-      h += `<span style="font-size:11px;color:var(--text-3);">グループ [▸] で詳細列を展開</span>`;
-      h += `</div></div>`;
-      h += `<div class="table-wrap"><table class="data-table pl-tbl">`;
+      h += `<span style="font-size:11px;color:var(--text-3);">項目グループ行の [▸] で詳細行を展開</span>`;
+      h += `</div>`;
+      h += `<div class="table-wrap"><table class="data-table pl-tbl" id="trendTable">`;
 
-      // Header row 1: group labels
-      h += `<thead><tr class="pl-grp-row">`;
-      h += `<th rowspan="2" class="col-sticky">月</th>`;
-      PL_GROUPS.forEach(g => {
-        h += `<th class="pl-grp-th" data-grpth="${g.id}" colspan="1">${g.label} <button class="grp-toggle-btn" data-grbtn="${g.id}" onclick="toggleTrendGrp('${g.id}')">▸</button></th>`;
-      });
-      h += `<th rowspan="2" class="col-num pl-fixed-th">固定費</th>`;
-      h += `<th colspan="4" class="pl-grp-th pl-grp-profit">📊 利益</th>`;
-      h += `<th rowspan="2" class="col-num">前月比</th>`;
-      h += `</tr>`;
-
-      // Header row 2: sub-column labels
-      h += `<tr class="pl-col-row">`;
-      PL_GROUPS.forEach(g => {
-        g.cols.forEach(c => {
-          const det = !c.summary;
-          const vis = (det && !GRP_STATE_TR[g.id]) ? ' style="display:none"' : '';
-          const dd  = det ? ` data-d="${g.id}"` : '';
-          h += `<th class="col-num"${vis}${dd}>${c.label}</th>`;
-        });
-      });
-      ['限界利益','利益率','暫定利益','利益率'].forEach(lbl => {
-        h += `<th class="col-num pl-hl-th">${lbl}</th>`;
-      });
-      h += `</tr></thead><tbody>`;
-
-      // Data rows — one per month
+      // ヘッダー行：月を列に（最終月は「今月」強調）
+      h += `<thead><tr>`;
+      h += `<th class="col-sticky pl-th-item">項目</th>`;
       data.forEach((d, i) => {
         const isCur = i === data.length - 1;
-        const prev  = i > 0 ? data[i - 1] : null;
-        const mom   = prev ? Math.round((d.sales - prev.sales) / prev.sales * 100) : null;
-        const momStr = mom === null ? '—' : (mom >= 0 ? `▲ +${mom}%` : `▼ ${mom}%`);
-        const momCls = mom === null ? '' : (mom >= 0 ? 'profit-pos' : 'profit-neg');
-        const rowCls = isCur ? 'row-summary' : (d.profit < 0 ? 'row-alert' : '');
+        h += `<th class="col-num pl-th-store${isCur ? '" style="color:var(--accent);font-weight:700;' : ''}">${d.month}${isCur ? '<br><span style="font-size:9px;">今月</span>' : ''}</th>`;
+      });
+      // 前月比列（最終月のみ意味を持つが全月で前月比を表示）
+      h += `<th class="col-num" style="min-width:64px;">前月比</th>`;
+      h += `</tr></thead><tbody>`;
 
-        h += `<tr class="${rowCls}">`;
-        h += `<td class="col-sticky pl-td-store"><strong>${d.month}</strong>${isCur ? ' <span style="font-size:10px;color:var(--accent);font-weight:600;">今月</span>' : ''}</td>`;
+      // 各グループ：サマリ行 + 詳細行
+      PL_GROUPS.forEach(g => {
+        const summaryCol = g.cols.find(c => c.summary);
+        const detailCols = g.cols.filter(c => !c.summary);
 
-        PL_GROUPS.forEach(g => {
-          g.cols.forEach(c => {
-            const det = !c.summary;
-            const vis = (det && !GRP_STATE_TR[g.id]) ? ' style="display:none"' : '';
-            const dd  = det ? ` data-d="${g.id}"` : '';
-            h += `<td class="col-num"${vis}${dd}>${fmtVal(d[c.id], c.fmt)}</td>`;
-          });
+        // グループサマリ行
+        h += `<tr class="pl-grp-row">`;
+        h += `<td class="col-sticky pl-td-grp">`;
+        if (detailCols.length > 0) {
+          h += `<button class="grp-toggle-btn" data-grbtn="${g.id}" onclick="toggleTrendGrp('${g.id}')">▸</button> `;
+        }
+        h += `<strong>${g.label}</strong>`;
+        if (summaryCol) h += ` <span style="font-size:10px;color:var(--text-3)">(${summaryCol.label})</span>`;
+        h += `</td>`;
+        data.forEach(d => {
+          const val = summaryCol ? d[summaryCol.id] : null;
+          h += `<td class="col-num">${fmtVal(val, summaryCol ? summaryCol.fmt : undefined)}</td>`;
         });
+        h += `<td class="col-num">—</td></tr>`;
 
-        h += `<td class="col-num">${fmtVal(d.fixed_total, 'num')}</td>`;
+        // 詳細行（デフォルト非表示）
+        detailCols.forEach(c => {
+          h += `<tr data-d="${g.id}" style="display:none">`;
+          h += `<td class="col-sticky pl-td-detail">　${c.label}</td>`;
+          data.forEach(d => h += `<td class="col-num">${fmtVal(d[c.id], c.fmt)}</td>`);
+          h += `<td class="col-num">—</td></tr>`;
+        });
+      });
 
-        [
-          { id:'marginal',      fmt:'num'  },
-          { id:'marginal_rate', fmt:'pct1' },
-          { id:'profit',        fmt:'num'  },
-          { id:'profit_rate',   fmt:'pct1' },
-        ].forEach(t => {
+      // 固定費行
+      h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp"><strong>固定費</strong></td>`;
+      data.forEach(d => h += `<td class="col-num">${fmtVal(d.fixed_total, 'num')}</td>`);
+      h += `<td class="col-num">—</td></tr>`;
+
+      // 利益行（ハイライト）、前月比は売上ベースで算出
+      const profitRows = [
+        { id: 'marginal',      label: '限界利益',   fmt: 'num'  },
+        { id: 'marginal_rate', label: '限界利益率', fmt: 'pct1' },
+        { id: 'profit',        label: '暫定利益',   fmt: 'num'  },
+        { id: 'profit_rate',   label: '暫定利益率', fmt: 'pct1' },
+      ];
+      profitRows.forEach(t => {
+        h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
+        data.forEach(d => {
           const val = d[t.id];
           let cls = 'col-num pl-hl';
           if (typeof val === 'number') cls += val < 0 ? ' profit-neg' : ' profit-pos';
           h += `<td class="${cls}">${fmtVal(val, t.fmt)}</td>`;
         });
-
-        h += `<td class="col-num ${momCls}">${momStr}</td>`;
-        h += `</tr>`;
+        h += `<td class="col-num">—</td></tr>`;
       });
 
+      // 前月比行（売上ベース）
+      h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp"><strong>前月比（売上）</strong></td>`;
+      data.forEach((d, i) => {
+        const prev = i > 0 ? data[i - 1] : null;
+        const mom  = prev ? Math.round((d.sales - prev.sales) / prev.sales * 100) : null;
+        const str  = mom === null ? '—' : (mom >= 0 ? `▲ +${mom}%` : `▼ ${mom}%`);
+        const cls  = mom === null ? '' : (mom >= 0 ? ' profit-pos' : ' profit-neg');
+        h += `<td class="col-num${cls}">${str}</td>`;
+      });
+      h += `<td class="col-num">—</td></tr>`;
+
       h += `</tbody></table></div>`;
-      h += `<div class="table-note">※ 金額単位：千円　|　各グループの [▸] で詳細列を展開　|　FT=フルタイム / PAT=パートタイム / OW=オーナー</div>`;
+      h += `<div class="table-note">※ 金額単位：千円　|　各グループ行の [▸] で詳細行を展開　|　FT=フルタイム / PAT=パートタイム / OW=オーナー</div>`;
       h += `</div>`;
 
       document.getElementById('trendTableContainer').innerHTML = h;

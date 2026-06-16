@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>店舗詳細 — DEARS</title>
+  <link rel="stylesheet" href="../../style.css" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title" id="storePageTitle">店舗詳細</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div id="storeDetailContent"></div>
+    </div>
+  </main>
+
+  <script src="../shared.js?v=1"></script>
+  <script>
+    renderSidebar('stores');
+    buildStoreDetail();
+    // Update topbar title after store name is known
+    const params = new URLSearchParams(window.location.search);
+    const s = STORE_DATA.find(x => x.id === params.get('id'));
+    if (s) document.getElementById('storePageTitle').textContent = s.name;
+  </script>
+</body>
+</html>

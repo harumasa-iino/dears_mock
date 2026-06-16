@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ダッシュボード — DEARS 店舗アプリ</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .dash-section-title {
+      font-size: 12px; font-weight: 700; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin: 20px 0 10px;
+    }
+    .action-cards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+      margin-bottom: 4px;
+    }
+    .action-card {
+      background: var(--surface-1); border: 1px solid var(--border-mid);
+      border-radius: 12px; padding: 18px 20px; cursor: pointer;
+      transition: box-shadow .15s, border-color .15s;
+      text-decoration: none; display: block; color: inherit;
+    }
+    .action-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.08); border-color: var(--accent); }
+    .action-card-icon { font-size: 22px; margin-bottom: 8px; }
+    .action-card-title { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 4px; }
+    .action-card-desc  { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+    .action-card-badge { margin-top: 10px; }
+
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .timeline-item {
+      display: flex; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .dot-blue   { background: var(--accent); }
+    .dot-green  { background: #22c55e; }
+    .dot-amber  { background: #f59e0b; }
+    .dot-red    { background: var(--red); }
+    .timeline-body { flex: 1; }
+    .timeline-text  { font-size: 13px; color: var(--text-1); }
+    .timeline-meta  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+
+    .mini-chart { display: flex; align-items: flex-end; gap: 4px; height: 60px; }
+    .mini-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 4px; background: var(--accent); opacity: .7; transition: opacity .15s; }
+    .mini-bar.current { opacity: 1; }
+    .mini-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .mini-bar-label { font-size: 9px; color: var(--text-3); }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">ダッシュボード</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content" id="dashContent"></div>
+  </main>
+
+  <script src="shared.js"></script>
+  <script>
+    renderStoreSidebar('dashboard');
+    const role = getStoreRole();
+
+    const MONTHLY_TREND = [
+      { month: '12月', sales: 2010 },
+      { month:  '1月', sales: 2080 },
+      { month:  '2月', sales: 2110 },
+      { month:  '3月', sales: 2180 },
+      { month:  '4月', sales: 2200 },
+      { month:  '5月', sales: 2240 },
+    ];
+    const maxSales = Math.max(...MONTHLY_TREND.map(d => d.sales));
+
+    const chartBars = MONTHLY_TREND.map((d, i) => {
+      const isCur = i === MONTHLY_TREND.length - 1;
+      const pct = Math.round(d.sales / maxSales * 100);
+      return `<div class="mini-bar-wrap">
+        <div class="mini-bar${isCur ? ' current' : ''}" style="height:${pct}%;"></div>
+        <div class="mini-bar-label">${d.month}</div>
+      </div>`;
+    }).join('');
+
+    // Owner vs Staff view
+    const ownerKPI = `
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">今月の技術売上</div>
+          <div class="kpi-value">¥2.24<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-up">▲ 前月比 +1.8%</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">今月の稼働率</div>
+          <div class="kpi-value">70.1<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub">目標 75%</div>
+        </div>
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">来店客数（月累計）</div>
+          <div class="kpi-value">244<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">新規 56 / リピート 188</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">月次報告</div>
+          <div class="kpi-value" style="font-size:20px;color:var(--red);">未送信</div>
+          <div class="kpi-sub kpi-down">期日：5月31日</div>
+        </div>
+      </div>`;
+
+    const staffKPI = `
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">本日の技術売上</div>
+          <div class="kpi-value">¥82<span class="kpi-unit">K</span></div>
+          <div class="kpi-sub kpi-up">▲ 昨日比 +8%</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">本日の来店客数</div>
+          <div class="kpi-value">9<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">新規 2 / リピート 7</div>
+        </div>
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">本日の稼働率</div>
+          <div class="kpi-value">75<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub kpi-up">目標達成</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">今月の入力日数</div>
+          <div class="kpi-value">23<span class="kpi-unit">日</span></div>
+          <div class="kpi-sub">営業日 31日中</div>
+        </div>
+      </div>`;
+
+    const ownerActions = `
+      <div class="dash-section-title">クイックアクション</div>
+      <div class="action-cards">
+        <a class="action-card" href="daily.html">
+          <div class="action-card-icon">📱</div>
+          <div class="action-card-title">日次入力</div>
+          <div class="action-card-desc">本日の施術実績・売上・客数を入力</div>
+        </a>
+        <a class="action-card" href="monthly-report.html">
+          <div class="action-card-icon">📋</div>
+          <div class="action-card-title">月次報告</div>
+          <div class="action-card-desc">月次の実績・経費・来月の広告予算を報告</div>
+          <div class="action-card-badge"><span class="status-badge status-pending">未送信</span></div>
+        </a>
+        <a class="action-card" href="daily-list.html">
+          <div class="action-card-icon">📊</div>
+          <div class="action-card-title">日次データ一覧</div>
+          <div class="action-card-desc">スタッフの入力データを確認・集計</div>
+        </a>
+        <a class="action-card" href="accounts.html">
+          <div class="action-card-icon">👥</div>
+          <div class="action-card-title">アカウント管理</div>
+          <div class="action-card-desc">スタッフアカウントの確認・管理</div>
+        </a>
+      </div>`;
+
+    const staffActions = `
+      <div class="dash-section-title">クイックアクション</div>
+      <div class="action-cards">
+        <a class="action-card" href="daily.html">
+          <div class="action-card-icon">📱</div>
+          <div class="action-card-title">日次入力</div>
+          <div class="action-card-desc">本日の施術実績・売上・客数を入力</div>
+        </a>
+        <a class="action-card" href="daily-list.html">
+          <div class="action-card-icon">📊</div>
+          <div class="action-card-title">日次データ一覧</div>
+          <div class="action-card-desc">過去の入力データを確認</div>
+        </a>
+      </div>`;
+
+    const ownerChart = `
+      <div class="dash-section-title">売上推移（直近6ヶ月）</div>
+      <div class="card" style="padding:16px 20px 12px;margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:600;color:var(--text-2);">技術売上（千円）</span>
+        </div>
+        <div class="mini-chart">${chartBars}</div>
+      </div>`;
+
+    const activityFeed = `
+      <div class="dash-section-title">最近のアクティビティ</div>
+      <div class="card" style="padding:0 16px;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot dot-blue"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">田中 花子 が日次データを入力しました</div>
+              <div class="timeline-meta">5月31日 18:22</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot dot-blue"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">鈴木 一平 が日次データを入力しました</div>
+              <div class="timeline-meta">5月31日 17:45</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot dot-amber"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">月次報告の期日まで <strong>1日</strong> です</div>
+              <div class="timeline-meta">5月30日 09:00 — システム通知</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot dot-green"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">4月の月次報告が本部に承認されました</div>
+              <div class="timeline-meta">5月8日 14:30 — 本部 山本 花子</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    const staffActivity = `
+      <div class="dash-section-title">最近の入力履歴</div>
+      <div class="card" style="padding:0 16px;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot dot-green"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">5月31日 の日次データを送信しました</div>
+              <div class="timeline-meta">5月31日 18:22</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot dot-green"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">5月30日 の日次データを送信しました</div>
+              <div class="timeline-meta">5月30日 19:01</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot dot-green"></div>
+            <div class="timeline-body">
+              <div class="timeline-text">5月29日 の日次データを送信しました</div>
+              <div class="timeline-meta">5月29日 17:55</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    document.getElementById('dashContent').innerHTML =
+      (role === 'owner' ? ownerKPI : staffKPI) +
+      (role === 'owner' ? ownerChart : '') +
+      (role === 'owner' ? ownerActions : staffActions) +
+      (role === 'owner' ? activityFeed : staffActivity);
+  </script>
+</body>
+</html>

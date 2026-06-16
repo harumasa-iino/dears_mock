@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>月次報告確認 — DEARS</title>
+  <link rel="stylesheet" href="../style.css?v=5" />
+  <style>
+    .action-btns { display: flex; gap: 6px; align-items: center; }
+    .btn-xs-confirm {
+      background: var(--accent); color: #fff; border: none;
+      padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-xs-confirm:hover { opacity: .85; }
+    .btn-xs-remind {
+      background: #f59e0b; color: #fff; border: none;
+      padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+    }
+    .btn-xs-remind:hover { opacity: .85; }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">月次報告確認</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>対象月</label>
+          <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+        </div>
+        <div class="filter-group">
+          <label>ステータス</label>
+          <select class="select-input"><option>全て</option><option>確認待ち</option><option>未報告</option><option>確定済み</option></select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">適用</button>
+      </div>
+
+      <div class="kpi-grid" style="margin-bottom:16px;">
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">対象店舗</div>
+          <div class="kpi-value">7<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub">直営 3 / FC 4</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">確定済み</div>
+          <div class="kpi-value">3<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub">報告完了</div>
+        </div>
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">確認待ち</div>
+          <div class="kpi-value">2<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub">報告あり・未確定</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">未報告</div>
+          <div class="kpi-value">2<span class="kpi-unit">店舗</span></div>
+          <div class="kpi-sub kpi-down">催促が必要</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">月次報告一覧 — 2025年5月</span>
+          <span class="card-count">7件</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>店舗名</th><th>区分</th><th>報告者</th>
+                <th class="col-num">技術売上</th><th class="col-num">物販売上</th>
+                <th class="col-num">来店客数</th><th class="col-num">稼働率</th>
+                <th>報告日</th><th>ステータス</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 確定済み -->
+              <tr>
+                <td><strong>表参道店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                <td>田中 花子</td>
+                <td class="col-num">3,210</td><td class="col-num">630</td>
+                <td class="col-num">300</td><td class="col-num">84.2%</td>
+                <td>5/31</td>
+                <td><span class="status-badge status-active">確定済み</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('修正モード（本実装時）')">修正</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>渋谷店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                <td>佐藤 健太</td>
+                <td class="col-num">2,680</td><td class="col-num">440</td>
+                <td class="col-num">268</td><td class="col-num">78.6%</td>
+                <td>5/31</td>
+                <td><span class="status-badge status-active">確定済み</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('修正モード（本実装時）')">修正</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>新宿店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                <td>田中 花子</td>
+                <td class="col-num">2,540</td><td class="col-num">440</td>
+                <td class="col-num">261</td><td class="col-num">77.4%</td>
+                <td>5/31</td>
+                <td><span class="status-badge status-active">確定済み</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('修正モード（本実装時）')">修正</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 確認待ち -->
+              <tr>
+                <td><strong>大阪梅田店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td>山田 太郎</td>
+                <td class="col-num">2,240</td><td class="col-num">440</td>
+                <td class="col-num">244</td><td class="col-num">70.1%</td>
+                <td>5/29</td>
+                <td><span class="status-badge status-pending">確認待ち</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs-confirm" onclick="alert('確定しました（本実装時）')">確定</button>
+                    <button class="btn-xs" onclick="alert('修正モード（本実装時）')">修正</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>名古屋栄店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td>田中 花子</td>
+                <td class="col-num">1,820</td><td class="col-num">320</td>
+                <td class="col-num">202</td><td class="col-num">65.8%</td>
+                <td>5/30</td>
+                <td><span class="status-badge status-pending">確認待ち</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs-confirm" onclick="alert('確定しました（本実装時）')">確定</button>
+                    <button class="btn-xs" onclick="alert('修正モード（本実装時）')">修正</button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 未報告：催促ボタン -->
+              <tr class="row-warn">
+                <td><strong>心斎橋店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td style="color:var(--red);font-weight:600;">未報告</td>
+                <td><span class="status-badge status-inactive">未報告</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs-remind" onclick="alert('鈴木 二郎さんに催促メールを送信しました（本実装時）')">催促</button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="row-warn">
+                <td><strong>福岡天神店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                <td style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td class="col-num" style="color:var(--text-3)">—</td>
+                <td style="color:var(--red);font-weight:600;">未報告</td>
+                <td><span class="status-badge status-inactive">未報告</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs-remind" onclick="alert('鈴木 一郎さんに催促メールを送信しました（本実装時）')">催促</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 金額単位：千円　|　確認待ちの報告は内容を確認の上「確定」ボタンで確定してください　|　未報告店舗には「催促」ボタンでオーナーに通知できます</div>
+      </div>
+    </div>
+  </main>
+  <script src="shared.js?v=7"></script>
+  <script>renderSidebar('monthly');</script>
+</body>
+</html>

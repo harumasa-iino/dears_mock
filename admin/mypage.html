@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>マイページ — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .mypage-wrap { max-width: 720px; }
+    .mypage-hero {
+      display: flex; align-items: center; gap: 20px;
+      background: var(--surface-2); border: 1px solid var(--border-mid);
+      border-radius: 12px; padding: 24px 28px; margin-bottom: 24px;
+    }
+    .mypage-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 700; flex-shrink: 0;
+    }
+    .mypage-name { font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .mypage-meta { font-size: 13px; color: var(--text-3); margin-top: 4px; }
+    .mypage-section { margin-bottom: 20px; }
+    .mypage-section-title {
+      font-size: 12px; font-weight: 600; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px;
+    }
+    .mypage-rows { background: var(--surface-2); border: 1px solid var(--border-mid); border-radius: 10px; overflow: hidden; }
+    .mypage-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border-light); font-size: 14px;
+    }
+    .mypage-row:last-child { border-bottom: none; }
+    .mypage-row-label { color: var(--text-3); flex-shrink: 0; width: 140px; }
+    .mypage-row-val { color: var(--text-1); font-weight: 500; }
+    .mypage-row-action { margin-left: auto; }
+    .perm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .perm-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-2); border: 1px solid var(--border-mid);
+      border-radius: 8px; padding: 12px 14px; font-size: 13px;
+    }
+    .perm-check { font-size: 16px; }
+    .perm-item-label { color: var(--text-2); }
+    .logout-btn {
+      display: flex; align-items: center; gap: 8px;
+      width: 100%; padding: 14px 18px;
+      background: none; border: none; cursor: pointer;
+      font-size: 14px; color: var(--red); text-align: left;
+    }
+    .logout-btn:hover { background: rgba(239,68,68,.06); }
+    .store-app-card {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-2); border: 1px solid var(--border-mid);
+      border-radius: 10px; padding: 16px 18px; gap: 12px;
+    }
+    .store-app-icon {
+      width: 40px; height: 40px; border-radius: 8px; background: var(--accent);
+      color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink:0;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">マイページ</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+      <div class="mypage-wrap" id="mypageWrap"></div>
+    </div>
+  </main>
+
+  <script src="shared.js"></script>
+  <script>
+    renderSidebar('mypage');
+    const role = getCurrentRole();
+
+    const ROLE_PROFILES = {
+      'honbu-edit': {
+        name: '山本 花子', email: 'yamamoto@dears.co.jp',
+        avatarChar: '山', roleLabel: '本部（編集）', badgeCls: 'role-honbu',
+        store: '—（全店）',
+        perms: ['全店舗データ閲覧','予算設定・編集','アカウント管理','店舗マスタ編集','月次データ承認','請求データ確認'],
+      },
+      'honbu-view': {
+        name: '佐々木 健', email: 'sasaki@dears.co.jp',
+        avatarChar: '佐', roleLabel: '本部（閲覧）', badgeCls: 'role-honbu-view',
+        store: '—（全店）',
+        perms: ['全店舗データ閲覧','月次データ閲覧','請求データ確認'],
+      },
+      owner: {
+        name: '山田 太郎', email: 'yamada@fc001.dears.co.jp',
+        avatarChar: '山', roleLabel: 'オーナー', badgeCls: 'role-owner',
+        store: '大阪梅田店',
+        storeApp: true,
+        perms: ['担当店舗データ閲覧','月次報告送信'],
+      },
+      staff: {
+        name: '田中 花子', email: 'tanaka.hanako@fc001.dears.co.jp',
+        avatarChar: '田', roleLabel: 'スタッフ', badgeCls: 'role-staff',
+        store: '大阪梅田店',
+        storeApp: true,
+        perms: ['日次入力'],
+      },
+    };
+
+    const p = ROLE_PROFILES[role] || ROLE_PROFILES['honbu-edit'];
+
+    const OWNER_STORES = [
+      { name: '大阪梅田店', code: 'FC001', href: '../store/dashboard.html?store=umeda' },
+      { name: '大阪心斎橋店', code: 'FC002', href: '../store/dashboard.html?store=shinsaibashi' },
+    ];
+
+    const ownerStoreSection = p.storeApp ? `
+      <div class="mypage-section">
+        <div class="mypage-section-title">担当店舗アプリ</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${OWNER_STORES.map(s => `
+          <div class="store-app-card">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="store-app-icon">🏪</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-1);">${s.name}</div>
+                <div style="font-size:12px;color:var(--text-3);margin-top:2px;">${s.code} — 日次入力・月次報告・スタッフ管理</div>
+              </div>
+            </div>
+            <a class="btn-primary" href="${s.href}" target="_blank" style="white-space:nowrap;flex-shrink:0;">店舗アプリを開く ↗</a>
+          </div>`).join('')}
+        </div>
+      </div>` : '';
+
+    const permItems = p.perms.map(perm =>
+      `<div class="perm-item"><span class="perm-check">✓</span><span class="perm-item-label">${perm}</span></div>`
+    ).join('');
+
+    document.getElementById('mypageWrap').innerHTML = `
+      <div class="mypage-hero">
+        <div class="mypage-avatar">${p.avatarChar}</div>
+        <div>
+          <div class="mypage-name">${p.name}</div>
+          <div class="mypage-meta">${p.email}</div>
+          <span class="role-badge ${p.badgeCls}" style="margin-top:6px;display:inline-block;">${p.roleLabel}</span>
+        </div>
+      </div>
+
+      <div class="mypage-section">
+        <div class="mypage-section-title">アカウント情報</div>
+        <div class="mypage-rows">
+          <div class="mypage-row">
+            <span class="mypage-row-label">氏名</span>
+            <span class="mypage-row-val">${p.name}</span>
+            <span class="mypage-row-action"><button class="btn-xs">変更</button></span>
+          </div>
+          <div class="mypage-row">
+            <span class="mypage-row-label">メールアドレス</span>
+            <span class="mypage-row-val">${p.email}</span>
+            <span class="mypage-row-action"><button class="btn-xs">変更</button></span>
+          </div>
+          <div class="mypage-row">
+            <span class="mypage-row-label">パスワード</span>
+            <span class="mypage-row-val" style="color:var(--text-3)">••••••••••</span>
+            <span class="mypage-row-action"><button class="btn-xs">変更</button></span>
+          </div>
+          <div class="mypage-row">
+            <span class="mypage-row-label">ロール</span>
+            <span class="mypage-row-val"><span class="role-badge ${p.badgeCls}">${p.roleLabel}</span></span>
+          </div>
+          <div class="mypage-row">
+            <span class="mypage-row-label">所属</span>
+            <span class="mypage-row-val">${p.store}</span>
+          </div>
+        </div>
+      </div>
+
+      ${ownerStoreSection}
+
+      <div class="mypage-section">
+        <div class="mypage-section-title">アクセス権限</div>
+        <div class="perm-grid">${permItems}</div>
+      </div>
+
+      <div class="mypage-section">
+        <div class="mypage-section-title">セッション</div>
+        <div class="mypage-rows">
+          <button class="logout-btn" onclick="location.href='../login.html'">← ログアウト</button>
+        </div>
+      </div>
+    `;
+  </script>
+</body>
+</html>

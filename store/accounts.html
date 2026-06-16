@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>アカウント一覧 — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">アカウント一覧</h1></div>
+      <div class="topbar-right"><div class="topbar-date">大阪梅田店</div></div>
+    </header>
+    <div class="page-content">
+
+      <div class="kpi-grid" style="margin-bottom:16px;">
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">アカウント数</div>
+          <div class="kpi-value">3<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">オーナー 1 / スタッフ 2</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">有効アカウント</div>
+          <div class="kpi-value">3<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">全員稼働中</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">大阪梅田店 — アカウント一覧</span>
+          <span class="card-count">3名</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>氏名</th><th>ロール</th><th>メールアドレス</th>
+                <th>ステータス</th><th>最終ログイン</th><th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>山田 太郎</strong>
+                  <div style="font-size:11px;color:var(--text-3);margin-top:2px;">ID: OW001</div>
+                </td>
+                <td><span class="role-badge role-owner">オーナー</span></td>
+                <td style="font-size:12px;color:var(--text-3)">yamada@fc001.dears.co.jp</td>
+                <td><span class="status-badge status-active">有効</span></td>
+                <td style="font-size:12px;color:var(--text-3)">2025-05-29</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('編集（本実装時）')">編集</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>田中 花子（スタッフ）</strong>
+                  <div style="font-size:11px;color:var(--text-3);margin-top:2px;">ID: FC001A</div>
+                </td>
+                <td><span class="role-badge role-staff">スタッフ</span></td>
+                <td style="font-size:12px;color:var(--text-3)">tanaka.h.s@fc001.dears.co.jp</td>
+                <td><span class="status-badge status-active">有効</span></td>
+                <td style="font-size:12px;color:var(--text-3)">2025-05-30</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('編集（本実装時）')">編集</button>
+                    <button class="btn-xs btn-xs-danger" onclick="alert('無効化（本実装時）')">無効化</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>鈴木 一平</strong>
+                  <div style="font-size:11px;color:var(--text-3);margin-top:2px;">ID: FC001B</div>
+                </td>
+                <td><span class="role-badge role-staff">スタッフ</span></td>
+                <td style="font-size:12px;color:var(--text-3)">suzuki.i@fc001.dears.co.jp</td>
+                <td><span class="status-badge status-active">有効</span></td>
+                <td style="font-size:12px;color:var(--text-3)">2025-05-28</td>
+                <td>
+                  <div class="action-btns">
+                    <button class="btn-xs" onclick="alert('編集（本実装時）')">編集</button>
+                    <button class="btn-xs btn-xs-danger" onclick="alert('無効化（本実装時）')">無効化</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 表示対象：大阪梅田店のオーナー・スタッフアカウントのみ</div>
+      </div>
+
+    </div>
+  </main>
+  <script src="shared.js"></script>
+  <script>renderStoreSidebar('accounts');</script>
+</body>
+</html>

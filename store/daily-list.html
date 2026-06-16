@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日次データ一覧 — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">日次データ一覧</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>対象月</label>
+          <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+        </div>
+        <div class="filter-group">
+          <label>スタッフ</label>
+          <select class="select-input">
+            <option>全員</option>
+            <option>田中 花子</option>
+            <option>鈴木 一平</option>
+          </select>
+        </div>
+        <div class="filter-spacer"></div>
+        <button class="btn-primary">適用</button>
+        <button class="btn-ghost">CSV ↓</button>
+      </div>
+
+      <div class="kpi-grid" style="margin-bottom:16px;">
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">月間技術売上</div>
+          <div class="kpi-value">¥2.24<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-up">▲ 前月比 +3.2%</div>
+        </div>
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">月間来店客数</div>
+          <div class="kpi-value">244<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">新規 56 / リピート 188</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">月間稼働率</div>
+          <div class="kpi-value">70.1<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub">目標 75%</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">入力済み日数</div>
+          <div class="kpi-value">28<span class="kpi-unit">日</span></div>
+          <div class="kpi-sub">営業日 31日中</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">日次データ — 2025年5月</span>
+          <span class="card-count" id="rowCount"></span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="dailyTable">
+            <thead>
+              <tr>
+                <th>日付</th><th>入力者</th>
+                <th class="col-num">技術売上</th><th class="col-num">物販売上</th>
+                <th class="col-num">来店客数</th><th class="col-num">新規</th>
+                <th class="col-num">リピート</th><th class="col-num">予約件数</th>
+                <th class="col-num">稼働人数</th><th class="col-num">稼働率</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody id="dailyBody"></tbody>
+          </table>
+        </div>
+        <div class="table-note">※ 金額単位：円　|　スタッフが日次入力フォームから送信したデータ</div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="shared.js"></script>
+  <script>
+    renderStoreSidebar('daily-list');
+
+    // Mock daily data for May 2025
+    const STAFF = ['田中 花子', '鈴木 一平'];
+    const DAILY_DATA = [];
+
+    // Generate 28 days of data
+    const baseStats = [
+      // [techSales, retailSales, customers, new, repeat, reservations, activeStaff]
+      [78000, 12000, 8, 2, 6, 10, 3],
+      [95000, 18000, 10, 3, 7, 12, 4],
+      [82000, 9000,  9, 2, 7, 11, 3],
+      [110000, 22000, 12, 4, 8, 14, 4],
+      [68000, 8000,  7, 1, 6, 9, 3],
+      [92000, 15000, 10, 3, 7, 12, 3],
+      [105000, 20000, 11, 3, 8, 13, 4],
+    ];
+
+    const notes = ['', '', '', 'GW特別営業', '', 'スタッフ研修あり', '', '', '新規キャンペーン実施', '', '', '', '', '', 'スタッフ1名欠勤'];
+    let noteIdx = 0;
+
+    for (let d = 1; d <= 31; d++) {
+      const date = new Date(2025, 4, d);
+      const dow = date.getDay();
+      if (dow === 0) continue; // skip Sundays (closed)
+      if (DAILY_DATA.length >= 28) break;
+
+      const base = baseStats[DAILY_DATA.length % baseStats.length];
+      const scale = 0.9 + Math.random() * 0.25;
+      const tech = Math.round(base[0] * scale / 1000) * 1000;
+      const retail = Math.round(base[1] * scale / 1000) * 1000;
+      const customers = Math.round(base[2] * (0.9 + Math.random() * 0.2));
+      const newC = Math.round(base[3] * (0.8 + Math.random() * 0.4));
+      const repeat = customers - newC;
+      const reservations = Math.round(base[5] * (0.9 + Math.random() * 0.2));
+      const activeStaff = base[6];
+      const totalSlots = activeStaff * 8;
+      const occ = Math.round(reservations / totalSlots * 100);
+      const staff = STAFF[DAILY_DATA.length % 2];
+      const note = notes[noteIdx % notes.length];
+      noteIdx++;
+
+      DAILY_DATA.push({
+        date: `5/${d}(${['日','月','火','水','木','金','土'][dow]})`,
+        staff, tech, retail, customers, newC, repeat, reservations, activeStaff, occ, note
+      });
+    }
+
+    const tbody = document.getElementById('dailyBody');
+    document.getElementById('rowCount').textContent = DAILY_DATA.length + '件';
+
+    // Monthly totals
+    let totTech = 0, totRetail = 0, totCust = 0, totNew = 0, totRepeat = 0, totRes = 0;
+
+    DAILY_DATA.forEach(d => {
+      totTech += d.tech; totRetail += d.retail;
+      totCust += d.customers; totNew += d.newC; totRepeat += d.repeat; totRes += d.reservations;
+
+      const isLow = d.occ < 60;
+      tbody.innerHTML += `
+        <tr class="${isLow ? 'row-warn' : ''}">
+          <td style="white-space:nowrap;"><strong>${d.date}</strong></td>
+          <td style="font-size:12px;">${d.staff}</td>
+          <td class="col-num">${d.tech.toLocaleString()}</td>
+          <td class="col-num">${d.retail.toLocaleString()}</td>
+          <td class="col-num">${d.customers}</td>
+          <td class="col-num">${d.newC}</td>
+          <td class="col-num">${d.repeat}</td>
+          <td class="col-num">${d.reservations}</td>
+          <td class="col-num">${d.activeStaff}</td>
+          <td class="col-num ${d.occ < 60 ? 'profit-neg' : d.occ >= 75 ? 'profit-pos' : ''}">${d.occ}%</td>
+          <td style="font-size:11px;color:var(--text-3);">${d.note || '—'}</td>
+        </tr>`;
+    });
+
+    // Totals row
+    const avgOcc = Math.round(totRes / (DAILY_DATA.length * DAILY_DATA[0].activeStaff * 8) * 100);
+    tbody.innerHTML += `
+      <tr class="row-summary">
+        <td><strong>合計</strong></td>
+        <td style="color:var(--text-3)">—</td>
+        <td class="col-num"><strong>${totTech.toLocaleString()}</strong></td>
+        <td class="col-num"><strong>${totRetail.toLocaleString()}</strong></td>
+        <td class="col-num"><strong>${totCust}</strong></td>
+        <td class="col-num"><strong>${totNew}</strong></td>
+        <td class="col-num"><strong>${totRepeat}</strong></td>
+        <td class="col-num"><strong>${totRes}</strong></td>
+        <td class="col-num">—</td>
+        <td class="col-num"><strong>${avgOcc}%</strong></td>
+        <td>—</td>
+      </tr>`;
+  </script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>予算管理 — DEARS</title>
+  <link rel="stylesheet" href="../style.css?v=5" />
+  <style>
+    .page-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--border-mid);
+      margin-bottom: 20px;
+    }
+    .page-tab {
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-3);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color .15s;
+    }
+    .page-tab:hover { color: var(--text-1); }
+    .page-tab.active {
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom-color: var(--accent);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .carryover-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: #fef3c7; color: #92400e;
+      border: 1px solid #fde68a;
+      border-radius: 4px; padding: 2px 7px; font-size: 11px; font-weight: 600;
+    }
+    .carryover-row { background: #fffbeb !important; }
+    .carryover-note {
+      font-size: 11px; color: #92400e;
+      display: flex; align-items: center; gap: 4px; margin-top: 2px;
+    }
+    .last-updated-cell { font-size: 11px; line-height: 1.5; }
+    .last-updated-dt   { color: var(--text-2); font-weight: 500; }
+    .last-updated-who  { color: var(--text-3); }
+
+    .access-denied {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 400px; gap: 16px; text-align: center;
+    }
+    .access-denied-icon { font-size: 48px; }
+    .access-denied-title { font-size: 20px; font-weight: 700; color: var(--text-1); }
+    .access-denied-desc  { font-size: 14px; color: var(--text-3); max-width: 360px; }
+
+    .readonly-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--surface-3); color: var(--text-3);
+      border: 1px solid var(--border-mid);
+      border-radius: 4px; padding: 2px 8px; font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">予算管理</h1>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-date">2025年5月</div>
+      </div>
+    </header>
+
+    <div class="page-content" id="pageContent">
+      <!-- コンテンツはスクリプトで描画 -->
+    </div>
+  </main>
+
+  <script src="shared.js?v=7"></script>
+  <script>
+    renderSidebar('budget');
+
+    const role = getCurrentRole();
+
+    // オーナー・スタッフはアクセス不可
+    if (role === 'owner' || role === 'staff') {
+      document.getElementById('pageContent').innerHTML = `
+        <div class="access-denied">
+          <div class="access-denied-icon">🔒</div>
+          <div class="access-denied-title">アクセス権限がありません</div>
+          <div class="access-denied-desc">予算管理は本部ロールのみ閲覧・編集できます。<br>権限が必要な場合は管理者にお問い合わせください。</div>
+          <a class="btn-ghost" href="dashboard.html">ダッシュボードに戻る</a>
+        </div>`;
+    } else {
+      renderBudgetPage(role);
+    }
+
+    function renderBudgetPage(role) {
+      const isEdit = role === 'honbu-edit' || role === 'admin';
+      const editTag = isEdit
+        ? `<span class="tag tag-edit">直接編集可</span>`
+        : `<span class="readonly-badge">閲覧のみ</span>`;
+
+      document.getElementById('pageContent').innerHTML = `
+        <!-- 保留中アラート -->
+        <div class="alert-banner">
+          <span class="alert-icon">⚠</span>
+          <span>マッチング保留中の予算申請が <strong>2件</strong> あります。手動紐付けが必要です。</span>
+          ${isEdit ? '<button class="btn-xs btn-alert">確認する</button>' : ''}
+        </div>
+
+        <!-- タブ -->
+        <div class="page-tabs">
+          <button class="page-tab active" onclick="switchTab('grid')">予算編集</button>
+          <button class="page-tab" onclick="switchTab('billing')">請求一覧</button>
+        </div>
+
+        <!-- 予算編集タブ -->
+        <div id="tab-grid" class="tab-panel active">
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label>対象月</label>
+              <select class="select-input"><option>2025年6月</option><option selected>2025年5月</option><option>2025年4月</option></select>
+            </div>
+            <div class="filter-group">
+              <label>用途</label>
+              <select class="select-input"><option>全て</option><option>集客</option><option>求人</option></select>
+            </div>
+            <div class="filter-spacer"></div>
+            <button class="btn-primary">適用</button>
+          </div>
+
+          <div class="info-banner" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12px;color:#1e40af;display:flex;gap:8px;align-items:flex-start;">
+            <span>ℹ</span>
+            <span>申請期日（毎月25日）までにオーナーからフォーム申請がない場合、<strong>前月の予算を自動繰越</strong>します。繰越された予算は「前月繰越」と表示されます。</span>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">予算編集 — 2025年5月</span>
+              ${editTag}
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th class="col-sticky">店舗名</th><th>区分</th>
+                    <th class="col-num">集客予算</th><th class="col-num">求人予算</th>
+                    <th class="col-num">合計（請求額）</th><th>申請元</th>
+                    <th>最終更新</th><th>ステータス</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="col-sticky">表参道店</td><td><span class="tag tag-direct">直営</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>380,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>—</td>
+                    <td class="col-num"><strong>380,000</strong></td>
+                    <td><span class="tag tag-manual">本部入力</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/05/01 09:15</div>
+                      <div class="last-updated-who">山本 花子</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">渋谷店</td><td><span class="tag tag-direct">直営</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>320,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>—</td>
+                    <td class="col-num"><strong>320,000</strong></td>
+                    <td><span class="tag tag-manual">本部入力</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/05/01 09:22</div>
+                      <div class="last-updated-who">山本 花子</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">新宿店</td><td><span class="tag tag-direct">直営</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>300,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>—</td>
+                    <td class="col-num"><strong>300,000</strong></td>
+                    <td><span class="tag tag-manual">本部入力</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/05/01 09:30</div>
+                      <div class="last-updated-who">山本 花子</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">大阪梅田店</td><td><span class="tag tag-fc">FC</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>280,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>120,000</td>
+                    <td class="col-num"><strong>400,000</strong></td>
+                    <td><span class="tag tag-webhook">フォーム申請</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/04/28 14:03</div>
+                      <div class="last-updated-who">山田 太郎</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">名古屋栄店</td><td><span class="tag tag-fc">FC</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>210,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>80,000</td>
+                    <td class="col-num"><strong>290,000</strong></td>
+                    <td><span class="tag tag-webhook">フォーム申請</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/04/29 11:47</div>
+                      <div class="last-updated-who">田中 花子</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">心斎橋店</td><td><span class="tag tag-fc">FC</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>200,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>77,000</td>
+                    <td class="col-num"><strong>277,000</strong></td>
+                    <td><span class="tag tag-webhook">フォーム申請</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/04/30 16:21</div>
+                      <div class="last-updated-who">鈴木 二郎</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <tr>
+                    <td class="col-sticky">福岡天神店</td><td><span class="tag tag-fc">FC</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>145,000</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>65,000</td>
+                    <td class="col-num"><strong>210,000</strong></td>
+                    <td><span class="tag tag-webhook">フォーム申請</span></td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/04/27 10:55</div>
+                      <div class="last-updated-who">鈴木 一郎</div>
+                    </td>
+                    <td><span class="status-badge status-active">確定</span></td>
+                  </tr>
+                  <!-- 前月繰越：申請期日（4/25）を超過したため自動繰越 -->
+                  <tr class="carryover-row">
+                    <td class="col-sticky">
+                      札幌大通店
+                      <div class="carryover-note">⚠ 申請期日（4/25）超過</div>
+                    </td>
+                    <td><span class="tag tag-fc">FC</span></td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>—</td>
+                    <td class="col-num ${isEdit ? 'editable' : ''}" ${isEdit ? 'contenteditable="true"' : ''}>—</td>
+                    <td class="col-num">—</td>
+                    <td>
+                      <span class="carryover-badge">↩ 前月繰越</span>
+                      <div style="font-size:10px;color:var(--text-3);margin-top:3px;">申請なし→4月予算を適用</div>
+                    </td>
+                    <td class="last-updated-cell">
+                      <div class="last-updated-dt">2025/04/26 00:00</div>
+                      <div class="last-updated-who" style="color:#92400e;">システム自動</div>
+                    </td>
+                    <td><span class="status-badge status-pending">繰越確定</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-note">※ 直営店は本部が直接入力 | FC店はオーナー月次フォームから自動取込 | 申請期日（毎月25日）を超過した場合は前月予算を自動繰越${isEdit ? ' | セルをクリックで直接編集可能' : ''}</div>
+          </div>
+        </div>
+
+        <!-- 請求一覧タブ -->
+        <div id="tab-billing" class="tab-panel">
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label>対象月</label>
+              <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+            </div>
+            <div class="filter-group">
+              <label>区分</label>
+              <select class="select-input"><option>全て</option><option>直営</option><option>FC</option></select>
+            </div>
+            <div class="filter-spacer"></div>
+            <button class="btn-primary">適用</button>
+            <button class="btn-ghost">請求CSV ↓</button>
+          </div>
+
+          <div class="billing-summary">
+            <div class="billing-sum-card">
+              <div class="billing-sum-label">集客広告費 合計</div>
+              <div class="billing-sum-val">¥1,835,000</div>
+              <div class="billing-sum-note">8店舗分</div>
+            </div>
+            <div class="billing-sum-card">
+              <div class="billing-sum-label">求人広告費 合計</div>
+              <div class="billing-sum-val">¥342,000</div>
+              <div class="billing-sum-note">FC 5店舗分</div>
+            </div>
+            <div class="billing-sum-card">
+              <div class="billing-sum-label">請求額 総合計</div>
+              <div class="billing-sum-val">¥2,177,000</div>
+              <div class="billing-sum-note">確定 7件 / 未確定 1件</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">請求一覧 — 2025年5月</span>
+              <span class="card-count" id="billingCount">8件</span>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>店舗名</th><th>区分</th>
+                    <th class="col-num">集客広告費</th><th class="col-num">求人広告費</th>
+                    <th class="col-num">請求額合計</th><th>ステータス</th><th>操作</th>
+                  </tr>
+                </thead>
+                <tbody id="billingTableBody"></tbody>
+                <tbody id="billingTotal"></tbody>
+              </table>
+            </div>
+            <div class="table-note">※ 金額単位：円　|　直営店舗は求人広告費なし（本部一括管理）</div>
+          </div>
+        </div>
+      `;
+
+      buildBillingTable();
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.page-tab').forEach((btn, i) => {
+        btn.classList.toggle('active', (i === 0 && tab === 'grid') || (i === 1 && tab === 'billing'));
+      });
+      document.getElementById('tab-grid').classList.toggle('active', tab === 'grid');
+      document.getElementById('tab-billing').classList.toggle('active', tab === 'billing');
+    }
+  </script>
+</body>
+</html>

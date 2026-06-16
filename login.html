@@ -73,12 +73,10 @@
     }
 
     function loginAs(role) {
-      if (role === 'admin') {
-        window.location.href = 'dashboard.html';
-      } else if (role === 'owner') {
-        window.location.href = 'owner-report.html';
+      if (role === 'owner' || role === 'staff1') {
+        window.location.href = 'store/dashboard.html';
       } else {
-        window.location.href = 'staff-input.html';
+        window.location.href = 'admin/dashboard.html';
       }
     }
   </script>

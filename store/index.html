@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>店舗アプリ — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">ホーム</h1></div>
+      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+    </header>
+    <div class="page-content">
+
+      <div class="kpi-grid" style="margin-bottom:24px;">
+        <div class="kpi-card kpi-card--blue">
+          <div class="kpi-label">今月の技術売上</div>
+          <div class="kpi-value">¥2.24<span class="kpi-unit">M</span></div>
+          <div class="kpi-sub kpi-up">▲ 前月比 +3.2%</div>
+        </div>
+        <div class="kpi-card kpi-card--green">
+          <div class="kpi-label">今月の稼働率</div>
+          <div class="kpi-value">70.1<span class="kpi-unit">%</span></div>
+          <div class="kpi-sub">目標 75%</div>
+        </div>
+        <div class="kpi-card kpi-card--slate">
+          <div class="kpi-label">スタッフ数</div>
+          <div class="kpi-value">6<span class="kpi-unit">名</span></div>
+          <div class="kpi-sub">FT 3 / PAT 2 / OW 1</div>
+        </div>
+        <div class="kpi-card kpi-card--amber">
+          <div class="kpi-label">月次報告</div>
+          <div class="kpi-value" style="font-size:20px;">未送信</div>
+          <div class="kpi-sub kpi-down">期日：5月31日</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="card" style="cursor:pointer;" onclick="location.href='daily.html'">
+          <div class="card-header">
+            <span class="card-title">📱 日次入力</span>
+          </div>
+          <div style="padding:16px 20px 20px;">
+            <p style="font-size:13px;color:var(--text-2);margin:0 0 16px;">本日の施術実績・売上・客数を入力します。</p>
+            <a class="btn-primary" href="daily.html" style="display:inline-block;">日次入力へ →</a>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;" onclick="location.href='monthly-report.html'">
+          <div class="card-header">
+            <span class="card-title">📋 月次報告</span>
+            <span class="status-badge status-pending">未送信</span>
+          </div>
+          <div style="padding:16px 20px 20px;">
+            <p style="font-size:13px;color:var(--text-2);margin:0 0 16px;">月次の実績・経費・来月の広告予算を報告します。</p>
+            <a class="btn-primary" href="monthly-report.html" style="display:inline-block;">月次報告へ →</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script src="shared.js"></script>
+  <script>renderStoreSidebar('home');</script>
+</body>
+</html>

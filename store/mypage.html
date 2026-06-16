@@ -49,6 +49,16 @@
       font-size: 14px; color: var(--red); text-align: left;
     }
     .logout-btn:hover { background: rgba(239,68,68,.06); }
+    .store-app-card {
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface-2); border: 1px solid var(--border-mid);
+      border-radius: 10px; padding: 16px 18px; gap: 12px;
+    }
+    .store-app-icon {
+      width: 40px; height: 40px; border-radius: 8px; background: var(--accent);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -84,6 +94,29 @@
     };
 
     const p = { ...profile, ...STORE_ROLE_PROFILES[role] };
+
+    const OWNER_STORES = [
+      { name: '大阪梅田店',   code: 'FC001', href: 'dashboard.html?store=umeda' },
+      { name: '大阪心斎橋店', code: 'FC002', href: 'dashboard.html?store=shinsaibashi' },
+    ];
+
+    const ownerStoresSection = role === 'owner' ? `
+      <div class="mypage-section">
+        <div class="mypage-section-title">担当店舗</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${OWNER_STORES.map(s => `
+          <div class="store-app-card">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="store-app-icon">🏪</div>
+              <div>
+                <div style="font-size:14px;font-weight:600;color:var(--text-1);">${s.name}</div>
+                <div style="font-size:12px;color:var(--text-3);margin-top:2px;">${s.code}</div>
+              </div>
+            </div>
+            <a class="btn-primary" href="${s.href}" style="white-space:nowrap;flex-shrink:0;">開く →</a>
+          </div>`).join('')}
+        </div>
+      </div>` : '';
 
     const permItems = p.perms.map(perm =>
       `<div class="perm-item"><span class="perm-check">✓</span><span class="perm-item-label">${perm}</span></div>`
@@ -121,12 +154,10 @@
             <span class="mypage-row-label">ロール</span>
             <span class="mypage-row-val"><span class="role-badge ${p.badgeCls}">${p.roleLabel}</span></span>
           </div>
-          <div class="mypage-row">
-            <span class="mypage-row-label">所属店舗</span>
-            <span class="mypage-row-val">${store.name}（${store.code}）</span>
-          </div>
         </div>
       </div>
+
+      ${ownerStoresSection}
 
       <div class="mypage-section">
         <div class="mypage-section-title">アクセス権限</div>

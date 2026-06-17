@@ -71,9 +71,9 @@ function renderSidebar(activeKey) {
       ${navHTML}
       <hr class="nav-divider" />
       <div class="nav-external-label">店舗向けアプリ</div>
-      <a class="nav-item-external" href="${B}../store/" target="_blank">
+      <a class="nav-item-external" href="${B}../store/">
         <span class="nav-icon">🏪</span><span>店舗入力アプリ</span>
-        <span style="margin-left:auto;font-size:10px;">↗</span>
+        <span style="margin-left:auto;font-size:10px;"></span>
       </a>
     </nav>
     <div class="sidebar-footer">
@@ -225,69 +225,149 @@ const ROLE_CONFIG = {
 // ===================================================
 const PL_GROUPS = [
   {
-    id: 'staff', label: '人員構成',
+    id: 'empty_seats', label: '空き席数',
     cols: [
-      { id: 'staff_total', label: 'スタッフ計', summary: true },
-      { id: 'empty_seats', label: '空き席' },
-      { id: 'ft_count',    label: 'FT数' },
-      { id: 'pat_count',   label: 'PAT数' },
-      { id: 'po',          label: 'PO在籍', fmt: 'bool' },
+      { id: 'empty_seats', label: '空き席数', summary: true },
     ]
   },
   {
-    id: 'occ', label: '稼働率',
+    id: 'staff', label: 'スタッフ人数合計',
     cols: [
-      { id: 'occ',     label: '合計', summary: true, fmt: 'pct1' },
-      { id: 'occ_ft',  label: 'FT',               fmt: 'pct1' },
-      { id: 'occ_pat', label: 'PAT',              fmt: 'pct1' },
-      { id: 'occ_ow',  label: 'OW',               fmt: 'pct1' },
+      { id: 'staff_total', label: 'スタッフ人数合計（オーナー含む）', summary: true },
+      { id: 'po',          label: 'プレイヤーオーナー在籍',           fmt: 'bool' },
+      { id: 'ft_count',    label: 'フルタイムのスタッフ数' },
+      { id: 'pat_count',   label: 'PAタイムのスタッフ数' },
     ]
   },
   {
-    id: 'prod', label: '生産性・単価',
+    id: 'occ', label: '稼働率合計',
     cols: [
-      { id: 'unit_price',   label: '客単価',   summary: true, fmt: 'yen' },
-      { id: 'labor_prod',   label: '人事生産性',             fmt: 'yen' },
-      { id: 'prod_val',     label: '生産性',                 fmt: 'yen' },
-      { id: 'tech_unit',    label: '技術単価',               fmt: 'yen' },
-      { id: 'retail_unit',  label: '店販単価',               fmt: 'yen' },
-      { id: 'retail_ratio', label: '店販比率',               fmt: 'pct1' },
+      { id: 'occ',     label: '稼働率合計',             summary: true, fmt: 'pct1' },
+      { id: 'occ_ft',  label: 'フルタイムのスタッフ稼働率',            fmt: 'pct1' },
+      { id: 'occ_pat', label: 'PAタイムのスタッフ稼働率',              fmt: 'pct1' },
+      { id: 'occ_ow',  label: 'オーナーの稼働率',                      fmt: 'pct1' },
     ]
   },
   {
-    id: 'sales', label: '売上',
+    id: 'labor_prod', label: '人事生産性合計（税抜）',
     cols: [
-      { id: 'sales',        label: '総売上',     summary: true, fmt: 'num' },
-      { id: 'sales_tech',   label: '技術売上',               fmt: 'num' },
-      { id: 'sales_retail', label: '店販売上',               fmt: 'num' },
-      { id: 'ft_tech',      label: 'FT技術',                 fmt: 'num' },
-      { id: 'pat_tech',     label: 'PAT技術',                fmt: 'num' },
-      { id: 'ow_tech',      label: 'OW技術',                 fmt: 'num' },
-      { id: 'new_sales',    label: '新規売上',               fmt: 'num' },
-      { id: 'exist_sales',  label: '既存売上',               fmt: 'num' },
+      { id: 'labor_prod',     label: '人事生産性合計（税抜）',         summary: true, fmt: 'yen' },
+      { id: 'labor_prod_ft',  label: 'フルタイムのスタッフ人事生産性',                fmt: 'yen' },
+      { id: 'labor_prod_pat', label: 'PAタイムのスタッフ人事生産性',                  fmt: 'yen' },
+      { id: 'labor_prod_ow',  label: 'オーナーの人事生産性',                          fmt: 'yen' },
     ]
   },
   {
-    id: 'vcost', label: '変動費',
+    id: 'prod', label: '生産性合計（税抜）',
     cols: [
-      { id: 'vcost_total', label: '小計', summary: true, fmt: 'num' },
-      { id: 'v_lab', label: '人件費',                   fmt: 'num' },
-      { id: 'v_wel', label: '法定福利',                 fmt: 'num' },
-      { id: 'v_tra', label: '交通費',                  fmt: 'num' },
-      { id: 'v_mat', label: '薬剤費',                  fmt: 'num' },
-      { id: 'v_roy', label: 'ロイヤリティ',            fmt: 'num' },
-      { id: 'v_oth', label: 'その他',                  fmt: 'num' },
+      { id: 'prod_val',     label: '生産性合計（税抜）',               summary: true, fmt: 'yen' },
+      { id: 'prod_val_ft',  label: 'フルタイムのスタッフ生産性',                      fmt: 'yen' },
+      { id: 'prod_val_pat', label: 'PAタイムのスタッフ生産性',                        fmt: 'yen' },
+      { id: 'prod_val_ow',  label: 'オーナーの生産性',                               fmt: 'yen' },
     ]
   },
   {
-    id: 'adcost', label: '広告費',
+    id: 'unit_price', label: '平均客単価合計（税抜）',
     cols: [
-      { id: 'adcost_total', label: '小計', summary: true, fmt: 'num' },
-      { id: 'a_hq',  label: '集客(本部)',              fmt: 'num' },
-      { id: 'a_hpb', label: 'HPB',                    fmt: 'num' },
-      { id: 'a_fly', label: 'チラシ',                 fmt: 'num' },
-      { id: 'a_rhq', label: '求人(本部)',              fmt: 'num' },
-      { id: 'a_rex', label: '求人(外部)',              fmt: 'num' },
+      { id: 'unit_price',     label: '平均客単価合計（税抜）',         summary: true, fmt: 'yen' },
+      { id: 'unit_price_ft',  label: 'フルタイムのスタッフ平均客単価',               fmt: 'yen' },
+      { id: 'unit_price_pat', label: 'PAタイムのスタッフ平均客単価',                  fmt: 'yen' },
+      { id: 'unit_price_ow',  label: 'オーナーの平均客単価',                         fmt: 'yen' },
+    ]
+  },
+  {
+    id: 'tech_unit', label: '平均技術単価合計（税抜）',
+    cols: [
+      { id: 'tech_unit',     label: '平均技術単価合計（税抜）',        summary: true, fmt: 'yen' },
+      { id: 'tech_unit_ft',  label: 'フルタイムのスタッフ平均技術単価',              fmt: 'yen' },
+      { id: 'tech_unit_pat', label: 'PAタイムのスタッフ平均技術単価',                fmt: 'yen' },
+      { id: 'tech_unit_ow',  label: 'オーナーの平均技術単価',                        fmt: 'yen' },
+    ]
+  },
+  {
+    id: 'retail_unit', label: '平均店販単価合計（税抜）',
+    cols: [
+      { id: 'retail_unit',     label: '平均店販単価合計（税抜）',      summary: true, fmt: 'yen' },
+      { id: 'retail_unit_ft',  label: 'フルタイムのスタッフ平均店販単価',            fmt: 'yen' },
+      { id: 'retail_unit_pat', label: 'PAタイムのスタッフ平均店販単価',              fmt: 'yen' },
+      { id: 'retail_unit_ow',  label: 'オーナーの平均店販単価',                      fmt: 'yen' },
+    ]
+  },
+  {
+    id: 'retail_ratio', label: '店販比率合計',
+    cols: [
+      { id: 'retail_ratio',     label: '店販比率合計',                summary: true, fmt: 'pct1' },
+      { id: 'retail_ratio_ft',  label: 'フルタイムのスタッフ店販比率',              fmt: 'pct1' },
+      { id: 'retail_ratio_pat', label: 'PAタイムのスタッフ店販比率',                fmt: 'pct1' },
+      { id: 'retail_ratio_ow',  label: 'オーナーの店販比率',                        fmt: 'pct1' },
+    ]
+  },
+  {
+    id: 'sales', label: '総売上（税抜）',
+    cols: [
+      { id: 'sales',              label: '総売上（税抜）',             summary: true, fmt: 'num' },
+      { id: 'sales_ft',           label: 'フルタイムスタッフの総売上',               fmt: 'num' },
+      { id: 'sales_pat',          label: 'PAタイムスタッフの総売上',                 fmt: 'num' },
+      { id: 'sales_ow',           label: 'オーナーの総売上',                         fmt: 'num' },
+      { id: 'sales_tech',         label: '技術売上合計',                             fmt: 'num' },
+      { id: 'ft_tech',            label: '　フルタイムスタッフの技術売上',           fmt: 'num' },
+      { id: 'pat_tech',           label: '　PAタイムスタッフの技術売上',             fmt: 'num' },
+      { id: 'ow_tech',            label: '　オーナーの技術売上',                     fmt: 'num' },
+      { id: 'sales_retail',       label: '店販売上合計',                             fmt: 'num' },
+      { id: 'ft_retail',          label: '　フルタイムスタッフの店販売上',           fmt: 'num' },
+      { id: 'pat_retail',         label: '　PAタイムスタッフの店販売上',             fmt: 'num' },
+      { id: 'ow_retail',          label: '　オーナーの店販売上',                     fmt: 'num' },
+      { id: 'new_sales',          label: '新規売上合計',                             fmt: 'num' },
+      { id: 'new_sales_tech',     label: '　技術売上合計',                           fmt: 'num' },
+      { id: 'new_ft_tech',        label: '　　フルタイムスタッフの技術売上',         fmt: 'num' },
+      { id: 'new_pat_tech',       label: '　　PAタイムスタッフの技術売上',           fmt: 'num' },
+      { id: 'new_ow_tech',        label: '　　オーナーの技術売上',                   fmt: 'num' },
+      { id: 'new_sales_retail',   label: '　店販売上合計',                           fmt: 'num' },
+      { id: 'new_ft_retail',      label: '　　フルタイムスタッフの店販売上',         fmt: 'num' },
+      { id: 'new_pat_retail',     label: '　　PAタイムスタッフの店販売上',           fmt: 'num' },
+      { id: 'new_ow_retail',      label: '　　オーナーの店販売上',                   fmt: 'num' },
+      { id: 'exist_sales',        label: '既存売上合計',                             fmt: 'num' },
+      { id: 'exist_sales_tech',   label: '　技術売上合計',                           fmt: 'num' },
+      { id: 'exist_ft_tech',      label: '　　フルタイムスタッフの技術売上',         fmt: 'num' },
+      { id: 'exist_pat_tech',     label: '　　PAタイムスタッフの技術売上',           fmt: 'num' },
+      { id: 'exist_ow_tech',      label: '　　オーナーの技術売上',                   fmt: 'num' },
+      { id: 'exist_sales_retail', label: '　店販売上合計',                           fmt: 'num' },
+      { id: 'exist_ft_retail',    label: '　　フルタイムスタッフの店販売上',         fmt: 'num' },
+      { id: 'exist_pat_retail',   label: '　　PAタイムスタッフの店販売上',           fmt: 'num' },
+      { id: 'exist_ow_retail',    label: '　　オーナーの店販売上',                   fmt: 'num' },
+    ]
+  },
+  {
+    id: 'vcost', label: '変動費合計（税抜）',
+    cols: [
+      { id: 'vcost_total',      label: '変動費合計（税抜）',           summary: true, fmt: 'num' },
+      { id: 'vcost_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'v_lab',            label: '人件費',                                      fmt: 'num' },
+      { id: 'v_lab_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'v_wel',            label: '法定福利費',                                  fmt: 'num' },
+      { id: 'v_wel_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'v_tra',            label: 'スタッフ交通費',                              fmt: 'num' },
+      { id: 'v_tra_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'v_mat',            label: '薬剤費',                                      fmt: 'num' },
+      { id: 'v_mat_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'v_roy',            label: 'ロイヤリティ',                                fmt: 'num' },
+      { id: 'v_roy_rate',       label: '　率',                                        fmt: 'pct1' },
+      { id: 'a_attract_total',  label: '集客合計広告費',                              fmt: 'num' },
+      { id: 'a_attract_rate',   label: '　率',                                        fmt: 'pct1' },
+      { id: 'a_hq',             label: '　本部集客広告費',                            fmt: 'num' },
+      { id: 'a_hq_rate',        label: '　　率',                                      fmt: 'pct1' },
+      { id: 'a_hpb',            label: '　HPB集客広告費',                             fmt: 'num' },
+      { id: 'a_hpb_rate',       label: '　　率',                                      fmt: 'pct1' },
+      { id: 'a_fly',            label: '　チラシ費',                                  fmt: 'num' },
+      { id: 'a_fly_rate',       label: '　　率',                                      fmt: 'pct1' },
+      { id: 'a_recruit_total',  label: '求人合計広告費',                              fmt: 'num' },
+      { id: 'a_recruit_rate',   label: '　率',                                        fmt: 'pct1' },
+      { id: 'a_rhq',            label: '　本部求人広告費',                            fmt: 'num' },
+      { id: 'a_rhq_rate',       label: '　　率',                                      fmt: 'pct1' },
+      { id: 'a_rex',            label: '　外部求人広告費',                            fmt: 'num' },
+      { id: 'a_rex_rate',       label: '　　率',                                      fmt: 'pct1' },
+      { id: 'v_oth',            label: 'その他',                                      fmt: 'num' },
+      { id: 'v_oth_rate',       label: '　率',                                        fmt: 'pct1' },
     ]
   },
 ];
@@ -296,52 +376,87 @@ const PL_STORE_DATA = [
   { name:'表参道店', storeId:'ST001', type:'direct', area:'東京',
     staff_total:8, empty_seats:2, ft_count:4, pat_count:3, po:true,
     occ:84.2, occ_ft:88.1, occ_pat:76.4, occ_ow:92.0,
-    unit_price:12800, labor_prod:1540, prod_val:1280, tech_unit:10700, retail_unit:2100, retail_ratio:16.4,
+    labor_prod:1540, labor_prod_ft:1480, labor_prod_pat:1120, labor_prod_ow:1780,
+    prod_val:1280, prod_val_ft:1350, prod_val_pat:980, prod_val_ow:0,
+    unit_price:12800, unit_price_ft:12200, unit_price_pat:10800, unit_price_ow:12600,
+    tech_unit:10700, tech_unit_ft:11200, tech_unit_pat:10400, tech_unit_ow:10900,
+    retail_unit:2100, retail_unit_ft:2300, retail_unit_pat:1900, retail_unit_ow:2050,
+    retail_ratio:16.4, retail_ratio_ft:17.2, retail_ratio_pat:16.0, retail_ratio_ow:15.8,
     sales:3840, sales_tech:3210, sales_retail:630, ft_tech:1770, pat_tech:930, ow_tech:510, new_sales:770, exist_sales:2440,
-    v_lab:690, v_wel:70, v_tra:24, v_mat:220, v_roy:0,   v_oth:46,
-    a_hq:180, a_hpb:130, a_fly:25, a_rhq:0,  a_rex:62,  f_ren:480, f_par:0 },
+    v_lab:690, v_wel:70, v_tra:24, v_mat:220, v_roy:0, v_oth:46,
+    a_hq:180, a_hpb:130, a_fly:25, a_rhq:0, a_rex:62, f_ren:480, f_par:0 },
   { name:'渋谷店', storeId:'ST002', type:'direct', area:'東京',
     staff_total:7, empty_seats:1, ft_count:4, pat_count:2, po:true,
     occ:78.6, occ_ft:82.0, occ_pat:70.2, occ_ow:85.0,
-    unit_price:11900, labor_prod:1490, prod_val:1220, tech_unit:10200, retail_unit:1700, retail_ratio:14.1,
+    labor_prod:1490, labor_prod_ft:1430, labor_prod_pat:1080, labor_prod_ow:1720,
+    prod_val:1220, prod_val_ft:1290, prod_val_pat:940, prod_val_ow:0,
+    unit_price:11900, unit_price_ft:11400, unit_price_pat:10200, unit_price_ow:11700,
+    tech_unit:10200, tech_unit_ft:10600, tech_unit_pat:9900, tech_unit_ow:10400,
+    retail_unit:1700, retail_unit_ft:1850, retail_unit_pat:1550, retail_unit_ow:1700,
+    retail_ratio:14.1, retail_ratio_ft:14.9, retail_ratio_pat:13.5, retail_ratio_ow:13.8,
     sales:3120, sales_tech:2680, sales_retail:440, ft_tech:1560, pat_tech:620, ow_tech:500, new_sales:680, exist_sales:2000,
-    v_lab:580, v_wel:58, v_tra:20, v_mat:190, v_roy:0,   v_oth:38,
-    a_hq:160, a_hpb:110, a_fly:20, a_rhq:0,  a_rex:48,  f_ren:420, f_par:0 },
+    v_lab:580, v_wel:58, v_tra:20, v_mat:190, v_roy:0, v_oth:38,
+    a_hq:160, a_hpb:110, a_fly:20, a_rhq:0, a_rex:48, f_ren:420, f_par:0 },
   { name:'新宿店', storeId:'ST003', type:'direct', area:'東京',
     staff_total:7, empty_seats:2, ft_count:3, pat_count:3, po:true,
     occ:77.4, occ_ft:80.0, occ_pat:74.0, occ_ow:84.0,
-    unit_price:11400, labor_prod:1480, prod_val:1200, tech_unit:9800, retail_unit:1600, retail_ratio:14.8,
+    labor_prod:1480, labor_prod_ft:1420, labor_prod_pat:1070, labor_prod_ow:1710,
+    prod_val:1200, prod_val_ft:1270, prod_val_pat:920, prod_val_ow:0,
+    unit_price:11400, unit_price_ft:10900, unit_price_pat:9800, unit_price_ow:11200,
+    tech_unit:9800, tech_unit_ft:10200, tech_unit_pat:9500, tech_unit_ow:9900,
+    retail_unit:1600, retail_unit_ft:1750, retail_unit_pat:1450, retail_unit_ow:1600,
+    retail_ratio:14.8, retail_ratio_ft:15.6, retail_ratio_pat:14.1, retail_ratio_ow:14.4,
     sales:2980, sales_tech:2540, sales_retail:440, ft_tech:1140, pat_tech:920, ow_tech:480, new_sales:620, exist_sales:1920,
-    v_lab:560, v_wel:56, v_tra:18, v_mat:180, v_roy:0,   v_oth:36,
-    a_hq:150, a_hpb:100, a_fly:18, a_rhq:0,  a_rex:46,  f_ren:450, f_par:0 },
+    v_lab:560, v_wel:56, v_tra:18, v_mat:180, v_roy:0, v_oth:36,
+    a_hq:150, a_hpb:100, a_fly:18, a_rhq:0, a_rex:46, f_ren:450, f_par:0 },
   { name:'大阪梅田店', storeId:'FC001', type:'fc', area:'大阪',
     staff_total:6, empty_seats:1, ft_count:3, pat_count:2, po:true,
     occ:70.1, occ_ft:74.0, occ_pat:63.0, occ_ow:76.0,
-    unit_price:11000, labor_prod:1370, prod_val:1100, tech_unit:9200, retail_unit:1800, retail_ratio:16.4,
+    labor_prod:1370, labor_prod_ft:1310, labor_prod_pat:980, labor_prod_ow:1590,
+    prod_val:1100, prod_val_ft:1160, prod_val_pat:840, prod_val_ow:0,
+    unit_price:11000, unit_price_ft:10500, unit_price_pat:9400, unit_price_ow:10800,
+    tech_unit:9200, tech_unit_ft:9600, tech_unit_pat:9000, tech_unit_ow:9300,
+    retail_unit:1800, retail_unit_ft:1950, retail_unit_pat:1600, retail_unit_ow:1780,
+    retail_ratio:16.4, retail_ratio_ft:17.0, retail_ratio_pat:15.8, retail_ratio_ow:15.9,
     sales:2680, sales_tech:2240, sales_retail:440, ft_tech:1100, pat_tech:660, ow_tech:480, new_sales:560, exist_sales:1680,
     v_lab:480, v_wel:48, v_tra:16, v_mat:160, v_roy:268, v_oth:32,
-    a_hq:140, a_hpb:100, a_fly:15, a_rhq:60, a_rex:50,  f_ren:320, f_par:0 },
+    a_hq:140, a_hpb:100, a_fly:15, a_rhq:60, a_rex:50, f_ren:320, f_par:0 },
   { name:'名古屋栄店', storeId:'FC002', type:'fc', area:'名古屋',
     staff_total:5, empty_seats:1, ft_count:2, pat_count:2, po:true,
     occ:65.8, occ_ft:70.0, occ_pat:59.0, occ_ow:72.0,
-    unit_price:10600, labor_prod:1340, prod_val:1060, tech_unit:9000, retail_unit:1600, retail_ratio:15.0,
+    labor_prod:1340, labor_prod_ft:1280, labor_prod_pat:960, labor_prod_ow:1560,
+    prod_val:1060, prod_val_ft:1120, prod_val_pat:810, prod_val_ow:0,
+    unit_price:10600, unit_price_ft:10100, unit_price_pat:9100, unit_price_ow:10400,
+    tech_unit:9000, tech_unit_ft:9400, tech_unit_pat:8700, tech_unit_ow:9100,
+    retail_unit:1600, retail_unit_ft:1750, retail_unit_pat:1420, retail_unit_ow:1600,
+    retail_ratio:15.0, retail_ratio_ft:15.7, retail_ratio_pat:14.2, retail_ratio_ow:14.7,
     sales:2140, sales_tech:1820, sales_retail:320, ft_tech:820, pat_tech:600, ow_tech:400, new_sales:440, exist_sales:1380,
     v_lab:420, v_wel:42, v_tra:14, v_mat:140, v_roy:214, v_oth:28,
-    a_hq:110, a_hpb:80,  a_fly:12, a_rhq:50, a_rex:38,  f_ren:280, f_par:0 },
+    a_hq:110, a_hpb:80, a_fly:12, a_rhq:50, a_rex:38, f_ren:280, f_par:0 },
   { name:'心斎橋店', storeId:'FC003', type:'fc', area:'大阪',
     staff_total:5, empty_seats:1, ft_count:2, pat_count:2, po:false,
     occ:62.3, occ_ft:65.0, occ_pat:56.0, occ_ow:70.0,
-    unit_price:10200, labor_prod:1320, prod_val:1020, tech_unit:8700, retail_unit:1500, retail_ratio:15.2,
+    labor_prod:1320, labor_prod_ft:1260, labor_prod_pat:940, labor_prod_ow:1530,
+    prod_val:1020, prod_val_ft:1080, prod_val_pat:780, prod_val_ow:0,
+    unit_price:10200, unit_price_ft:9700, unit_price_pat:8800, unit_price_ow:10000,
+    tech_unit:8700, tech_unit_ft:9100, tech_unit_pat:8400, tech_unit_ow:8800,
+    retail_unit:1500, retail_unit_ft:1640, retail_unit_pat:1340, retail_unit_ow:1500,
+    retail_ratio:15.2, retail_ratio_ft:15.9, retail_ratio_pat:14.4, retail_ratio_ow:14.8,
     sales:1980, sales_tech:1680, sales_retail:300, ft_tech:730, pat_tech:560, ow_tech:390, new_sales:400, exist_sales:1280,
     v_lab:390, v_wel:39, v_tra:13, v_mat:130, v_roy:198, v_oth:25,
-    a_hq:100, a_hpb:70,  a_fly:10, a_rhq:45, a_rex:32,  f_ren:260, f_par:0 },
+    a_hq:100, a_hpb:70, a_fly:10, a_rhq:45, a_rex:32, f_ren:260, f_par:0 },
   { name:'福岡天神店', storeId:'FC007', type:'fc', area:'福岡',
     staff_total:5, empty_seats:3, ft_count:2, pat_count:2, po:false,
     occ:48.2, occ_ft:52.0, occ_pat:42.0, occ_ow:56.0,
-    unit_price:8100, labor_prod:1200, prod_val:890, tech_unit:6900, retail_unit:1200, retail_ratio:14.8,
+    labor_prod:1200, labor_prod_ft:1150, labor_prod_pat:860, labor_prod_ow:1400,
+    prod_val:890, prod_val_ft:940, prod_val_pat:680, prod_val_ow:0,
+    unit_price:8100, unit_price_ft:7700, unit_price_pat:7000, unit_price_ow:7900,
+    tech_unit:6900, tech_unit_ft:7200, tech_unit_pat:6700, tech_unit_ow:7000,
+    retail_unit:1200, retail_unit_ft:1310, retail_unit_pat:1080, retail_unit_ow:1200,
+    retail_ratio:14.8, retail_ratio_ft:15.5, retail_ratio_pat:14.0, retail_ratio_ow:14.4,
     sales:1420, sales_tech:1210, sales_retail:210, ft_tech:520, pat_tech:420, ow_tech:270, new_sales:260, exist_sales:950,
     v_lab:400, v_wel:40, v_tra:12, v_mat:110, v_roy:142, v_oth:22,
-    a_hq:80,  a_hpb:65,  a_fly:8,  a_rhq:35, a_rex:30,  f_ren:480, f_par:0 },
+    a_hq:80, a_hpb:65, a_fly:8, a_rhq:35, a_rex:30, f_ren:480, f_par:0 },
 ];
 
 const BILLING_DATA = [
@@ -370,28 +485,113 @@ function fmtVal(val, fmt) {
 
 function computeStore(s) {
   const d = { ...s };
-  d.vcost_total  = d.v_lab + d.v_wel + d.v_tra + d.v_mat + d.v_roy + d.v_oth;
-  d.adcost_total = d.a_hq  + d.a_hpb + d.a_fly + d.a_rhq + d.a_rex;
-  d.fixed_total  = d.f_ren + (d.f_par || 0);
-  d.marginal     = d.sales - d.vcost_total - d.adcost_total;
-  d.marginal_rate= d.marginal / d.sales * 100;
-  d.profit       = d.marginal - d.fixed_total;
-  d.profit_rate  = d.profit   / d.sales * 100;
+  const sales = d.sales;
+
+  // Derived retail by type (approximate split)
+  d.ft_retail  = Math.round(d.sales_retail * (d.ft_tech  / (d.ft_tech + d.pat_tech + d.ow_tech)));
+  d.pat_retail = Math.round(d.sales_retail * (d.pat_tech / (d.ft_tech + d.pat_tech + d.ow_tech)));
+  d.ow_retail  = d.sales_retail - d.ft_retail - d.pat_retail;
+
+  // Total sales by type
+  d.sales_ft  = d.ft_tech  + d.ft_retail;
+  d.sales_pat = d.pat_tech + d.pat_retail;
+  d.sales_ow  = d.ow_tech  + d.ow_retail;
+
+  // New/exist tech+retail split (using ~93% tech ratio from new_sales)
+  const newTechRatio    = 0.93;
+  const existTechRatio  = 0.97;
+  d.new_sales_tech   = Math.round(d.new_sales  * newTechRatio);
+  d.new_sales_retail = d.new_sales - d.new_sales_tech;
+  const ftShare = d.ft_tech / (d.ft_tech + d.pat_tech + d.ow_tech);
+  const patShare= d.pat_tech/ (d.ft_tech + d.pat_tech + d.ow_tech);
+  d.new_ft_tech    = Math.round(d.new_sales_tech * ftShare);
+  d.new_pat_tech   = Math.round(d.new_sales_tech * patShare);
+  d.new_ow_tech    = d.new_sales_tech - d.new_ft_tech - d.new_pat_tech;
+  d.new_ft_retail  = Math.round(d.new_sales_retail * ftShare);
+  d.new_pat_retail = Math.round(d.new_sales_retail * patShare);
+  d.new_ow_retail  = d.new_sales_retail - d.new_ft_retail - d.new_pat_retail;
+
+  d.exist_sales_tech   = Math.round(d.exist_sales * existTechRatio);
+  d.exist_sales_retail = d.exist_sales - d.exist_sales_tech;
+  d.exist_ft_tech    = Math.round(d.exist_sales_tech * ftShare);
+  d.exist_pat_tech   = Math.round(d.exist_sales_tech * patShare);
+  d.exist_ow_tech    = d.exist_sales_tech - d.exist_ft_tech - d.exist_pat_tech;
+  d.exist_ft_retail  = Math.round(d.exist_sales_retail * ftShare);
+  d.exist_pat_retail = Math.round(d.exist_sales_retail * patShare);
+  d.exist_ow_retail  = d.exist_sales_retail - d.exist_ft_retail - d.exist_pat_retail;
+
+  // Cost totals
+  d.a_attract_total  = d.a_hq  + d.a_hpb + d.a_fly;
+  d.a_recruit_total  = d.a_rhq + d.a_rex;
+  d.adcost_total     = d.a_attract_total + d.a_recruit_total;
+  d.vcost_total      = d.v_lab + d.v_wel + d.v_tra + d.v_mat + d.v_roy + d.v_oth + d.adcost_total;
+  d.fixed_total      = d.f_ren + (d.f_par || 0);
+
+  // Rates (all as % of sales)
+  const pct = v => sales > 0 ? +((v / sales) * 100).toFixed(1) : 0;
+  d.vcost_rate      = pct(d.vcost_total);
+  d.v_lab_rate      = pct(d.v_lab);
+  d.v_wel_rate      = pct(d.v_wel);
+  d.v_tra_rate      = pct(d.v_tra);
+  d.v_mat_rate      = pct(d.v_mat);
+  d.v_roy_rate      = pct(d.v_roy);
+  d.a_attract_rate  = pct(d.a_attract_total);
+  d.a_hq_rate       = pct(d.a_hq);
+  d.a_hpb_rate      = pct(d.a_hpb);
+  d.a_fly_rate      = pct(d.a_fly);
+  d.a_recruit_rate  = pct(d.a_recruit_total);
+  d.a_rhq_rate      = pct(d.a_rhq);
+  d.a_rex_rate      = pct(d.a_rex);
+  d.v_oth_rate      = pct(d.v_oth);
+  d.fixed_rate      = pct(d.fixed_total);
+  d.f_ren_rate      = pct(d.f_ren);
+  d.f_par_rate      = pct(d.f_par || 0);
+
+  // Profit
+  d.marginal      = d.sales - d.vcost_total;
+  d.marginal_rate = pct(d.marginal);
+  d.profit        = d.marginal - d.fixed_total;
+  d.profit_rate   = pct(d.profit);
+
   return d;
 }
 
 function computeTotals(data) {
   const t = { name:'合計', type:'__total__', _isTotal:true, po:null };
-  const sumKeys = ['staff_total','empty_seats','ft_count','pat_count',
-    'sales','sales_tech','sales_retail','ft_tech','pat_tech','ow_tech','new_sales','exist_sales',
+  const sumKeys = [
+    'staff_total','empty_seats','ft_count','pat_count',
+    'sales','sales_ft','sales_pat','sales_ow',
+    'sales_tech','ft_tech','pat_tech','ow_tech',
+    'sales_retail','ft_retail','pat_retail','ow_retail',
+    'new_sales','new_sales_tech','new_ft_tech','new_pat_tech','new_ow_tech',
+    'new_sales_retail','new_ft_retail','new_pat_retail','new_ow_retail',
+    'exist_sales','exist_sales_tech','exist_ft_tech','exist_pat_tech','exist_ow_tech',
+    'exist_sales_retail','exist_ft_retail','exist_pat_retail','exist_ow_retail',
     'v_lab','v_wel','v_tra','v_mat','v_roy','v_oth',
     'a_hq','a_hpb','a_fly','a_rhq','a_rex',
-    'vcost_total','adcost_total','fixed_total','marginal','profit'];
-  const avgKeys = ['occ','occ_ft','occ_pat','occ_ow',
-    'unit_price','labor_prod','prod_val','tech_unit','retail_unit','retail_ratio',
-    'marginal_rate','profit_rate'];
+    'a_attract_total','a_recruit_total','adcost_total','vcost_total','fixed_total',
+    'f_ren','f_par','marginal','profit',
+  ];
+  const avgKeys = [
+    'occ','occ_ft','occ_pat','occ_ow',
+    'labor_prod','labor_prod_ft','labor_prod_pat','labor_prod_ow',
+    'prod_val','prod_val_ft','prod_val_pat','prod_val_ow',
+    'unit_price','unit_price_ft','unit_price_pat','unit_price_ow',
+    'tech_unit','tech_unit_ft','tech_unit_pat','tech_unit_ow',
+    'retail_unit','retail_unit_ft','retail_unit_pat','retail_unit_ow',
+    'retail_ratio','retail_ratio_ft','retail_ratio_pat','retail_ratio_ow',
+  ];
   sumKeys.forEach(k => { t[k] = data.reduce((s,d) => s + (d[k]||0), 0); });
   avgKeys.forEach(k => { t[k] = data.reduce((s,d) => s + (d[k]||0), 0) / data.length; });
+  // Recompute rates from totals
+  const pct = v => t.sales > 0 ? +((v / t.sales) * 100).toFixed(1) : 0;
+  t.vcost_rate=pct(t.vcost_total); t.v_lab_rate=pct(t.v_lab); t.v_wel_rate=pct(t.v_wel);
+  t.v_tra_rate=pct(t.v_tra); t.v_mat_rate=pct(t.v_mat); t.v_roy_rate=pct(t.v_roy);
+  t.a_attract_rate=pct(t.a_attract_total); t.a_hq_rate=pct(t.a_hq); t.a_hpb_rate=pct(t.a_hpb);
+  t.a_fly_rate=pct(t.a_fly); t.a_recruit_rate=pct(t.a_recruit_total); t.a_rhq_rate=pct(t.a_rhq);
+  t.a_rex_rate=pct(t.a_rex); t.v_oth_rate=pct(t.v_oth);
+  t.fixed_rate=pct(t.fixed_total); t.f_ren_rate=pct(t.f_ren); t.f_par_rate=pct(t.f_par||0);
+  t.marginal_rate=pct(t.marginal); t.profit_rate=pct(t.profit);
   return t;
 }
 
@@ -400,6 +600,7 @@ function computeTotals(data) {
 // ===================================================
 const GRP_STATE = {};
 PL_GROUPS.forEach(g => GRP_STATE[g.id] = false);
+GRP_STATE['fixed'] = false;
 
 function buildPLTable() {
   const data = PL_STORE_DATA.map(computeStore);
@@ -455,24 +656,46 @@ function buildPLTable() {
     });
   });
 
-  // 固定費行
-  h += `<tr class="pl-grp-row">`;
-  h += `<td class="col-sticky pl-td-grp"><strong>固定費</strong></td>`;
-  allStores.forEach(s => {
-    h += `<td class="col-num${s._isTotal ? ' row-summary-cell' : ''}">${fmtVal(s.fixed_total, 'num')}</td>`;
+  // 限界利益行
+  [
+    { id: 'marginal',      label: '限界利益',   fmt: 'num',  hl: true },
+    { id: 'marginal_rate', label: '限界利益率', fmt: 'pct1', hl: true },
+  ].forEach(t => {
+    h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
+    allStores.forEach(s => {
+      const val = s[t.id];
+      let cls = 'col-num pl-hl';
+      if (typeof val === 'number') cls += val < 0 ? ' profit-neg' : ' profit-pos';
+      h += `<td class="${cls}">${fmtVal(val, t.fmt)}</td>`;
+    });
+    h += `</tr>`;
   });
-  h += `</tr>`;
 
-  // 利益行（ハイライト）
-  const profitRows = [
-    { id: 'marginal',      label: '限界利益',   fmt: 'num'  },
-    { id: 'marginal_rate', label: '限界利益率', fmt: 'pct1' },
-    { id: 'profit',        label: '暫定利益',   fmt: 'num'  },
-    { id: 'profit_rate',   label: '暫定利益率', fmt: 'pct1' },
-  ];
-  profitRows.forEach(t => {
-    h += `<tr class="pl-grp-row">`;
-    h += `<td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
+  // 固定費グループ（展開可能）
+  const fixedGrpId = 'fixed';
+  h += `<tr class="pl-grp-row">`;
+  h += `<td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" data-grbtn="${fixedGrpId}" onclick="toggleGrp('${fixedGrpId}')">▸</button> <strong>固定費合計（税抜）</strong></td>`;
+  allStores.forEach(s => h += `<td class="col-num${s._isTotal ? ' row-summary-cell' : ''}">${fmtVal(s.fixed_total, 'num')}</td>`);
+  h += `</tr>`;
+  [
+    { id: 'fixed_rate', label: '率',               fmt: 'pct1' },
+    { id: 'f_ren',      label: '家賃',              fmt: 'num'  },
+    { id: 'f_ren_rate', label: '　率',              fmt: 'pct1' },
+    { id: 'f_par',      label: 'お客様駐車場代',    fmt: 'num'  },
+    { id: 'f_par_rate', label: '　率',              fmt: 'pct1' },
+  ].forEach(c => {
+    h += `<tr data-d="${fixedGrpId}" style="display:none">`;
+    h += `<td class="col-sticky pl-td-detail">　${c.label}</td>`;
+    allStores.forEach(s => h += `<td class="col-num">${fmtVal(s[c.id], c.fmt)}</td>`);
+    h += `</tr>`;
+  });
+
+  // 暫定利益行
+  [
+    { id: 'profit',      label: '暫定利益',   fmt: 'num'  },
+    { id: 'profit_rate', label: '暫定利益率', fmt: 'pct1' },
+  ].forEach(t => {
+    h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
     allStores.forEach(s => {
       const val = s[t.id];
       let cls = 'col-num pl-hl';
@@ -531,11 +754,29 @@ PL_STORE_DATA.forEach(s => {
       occ_pat:+( s.occ_pat * sc).toFixed(1),
       occ_ow: +( s.occ_ow  * sc).toFixed(1),
       unit_price:   r(s.unit_price  * (0.97 + sc * 0.03)),
+      unit_price_ft:  r(s.unit_price_ft  * (0.97 + sc * 0.03)),
+      unit_price_pat: r(s.unit_price_pat * (0.97 + sc * 0.03)),
+      unit_price_ow:  r(s.unit_price_ow  * (0.97 + sc * 0.03)),
       labor_prod:   s1(s.labor_prod),
+      labor_prod_ft:  r(s.labor_prod_ft  * (0.97 + sc * 0.03)),
+      labor_prod_pat: r(s.labor_prod_pat * (0.97 + sc * 0.03)),
+      labor_prod_ow:  r(s.labor_prod_ow  * (0.97 + sc * 0.03)),
       prod_val:     s1(s.prod_val),
+      prod_val_ft:  s1(s.prod_val_ft),
+      prod_val_pat: s1(s.prod_val_pat),
+      prod_val_ow:  s.prod_val_ow,
       tech_unit:    r(s.tech_unit   * (0.97 + sc * 0.03)),
+      tech_unit_ft:  r(s.tech_unit_ft  * (0.97 + sc * 0.03)),
+      tech_unit_pat: r(s.tech_unit_pat * (0.97 + sc * 0.03)),
+      tech_unit_ow:  r(s.tech_unit_ow  * (0.97 + sc * 0.03)),
       retail_unit:  s.retail_unit,
+      retail_unit_ft:  s.retail_unit_ft,
+      retail_unit_pat: s.retail_unit_pat,
+      retail_unit_ow:  s.retail_unit_ow,
       retail_ratio: +(s.retail_ratio).toFixed(1),
+      retail_ratio_ft:  +s.retail_ratio_ft.toFixed(1),
+      retail_ratio_pat: +s.retail_ratio_pat.toFixed(1),
+      retail_ratio_ow:  +s.retail_ratio_ow.toFixed(1),
       sales:        s1(s.sales),
       sales_tech:   s1(s.sales_tech),
       sales_retail: s1(s.sales_retail),
@@ -619,7 +860,7 @@ function buildStoreDetail() {
       <a href="${B}stores.html" class="btn-ghost">← 店舗マスタ一覧に戻る</a>
       <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
         ${stsBadge} ${typeTag}
-        <a class="btn-ghost" href="${B}../store/" target="_blank">🏪 店舗アプリを開く ↗</a>
+        <a class="btn-ghost" href="${B}../store/">🏪 店舗アプリを開く</a>
         <button class="btn-primary" onclick="alert('編集モード（本実装時）')">✎ 編集</button>
       </div>
     </div>

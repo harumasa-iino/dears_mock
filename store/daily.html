@@ -79,6 +79,7 @@
           <div class="account-meta">
             <span class="account-meta-item">🏪 大阪梅田店</span>
             <span class="account-meta-item">👤 スタイリスト</span>
+            <span class="account-meta-item">🕐 フルタイム</span>
           </div>
         </div>
       </div>
@@ -95,53 +96,111 @@
             </div>
           </div>
 
-          <!-- 売上 -->
+          <!-- 勤務 -->
           <div class="form-card-section">
-            <div class="form-section-title">売上</div>
-            <div class="form-row">
-              <label class="form-label">技術売上<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+            <div class="form-section-title">勤務</div>
+            <div class="daily-grid">
+              <div class="daily-cell">
+                <label>予約解放時間<span class="form-required">*</span></label>
+                <div class="input-suffix">
+                  <input type="number" class="form-input" placeholder="0" min="0" step="0.5" />
+                  <span class="suffix-label">時間</span>
+                </div>
               </div>
-              <div class="form-hint">カット・カラー・パーマ等の施術売上</div>
-            </div>
-            <div class="form-row">
-              <label class="form-label">物販売上</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <div class="daily-cell">
+                <label>稼働時間<span class="form-required">*</span></label>
+                <div class="input-suffix">
+                  <input type="number" class="form-input" placeholder="0" min="0" step="0.5" />
+                  <span class="suffix-label">時間</span>
+                </div>
               </div>
-              <div class="form-hint">シャンプー・トリートメント等（なければ0）</div>
             </div>
           </div>
 
-          <!-- 予約・客数 -->
+          <!-- 新規 -->
           <div class="form-card-section">
-            <div class="form-section-title">予約・客数</div>
+            <div class="form-section-title">新規</div>
+            <div class="form-row">
+              <label class="form-label">新規入客数<span class="form-required">*</span></label>
+              <div class="daily-grid">
+                <div class="daily-cell">
+                  <label>技術入客数</label>
+                  <input type="number" class="form-input" placeholder="0" min="0" />
+                </div>
+                <div class="daily-cell">
+                  <label>店販販売人数</label>
+                  <input type="number" class="form-input" placeholder="0" min="0" />
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">新規売上<span class="form-required">*</span></label>
+              <div class="daily-grid">
+                <div class="daily-cell">
+                  <label>技術売上</label>
+                  <div class="input-suffix">
+                    <input type="number" class="form-input" placeholder="0" min="0" />
+                    <span class="suffix-label">円</span>
+                  </div>
+                </div>
+                <div class="daily-cell">
+                  <label>店販売上</label>
+                  <div class="input-suffix">
+                    <input type="number" class="form-input" placeholder="0" min="0" />
+                    <span class="suffix-label">円</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 既存 -->
+          <div class="form-card-section">
+            <div class="form-section-title">既存</div>
+            <div class="form-row">
+              <label class="form-label">既存入客数<span class="form-required">*</span></label>
+              <div class="daily-grid">
+                <div class="daily-cell">
+                  <label>技術入客数</label>
+                  <input type="number" class="form-input" placeholder="0" min="0" />
+                </div>
+                <div class="daily-cell">
+                  <label>店販販売人数</label>
+                  <input type="number" class="form-input" placeholder="0" min="0" />
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">既存売上<span class="form-required">*</span></label>
+              <div class="daily-grid">
+                <div class="daily-cell">
+                  <label>技術売上</label>
+                  <div class="input-suffix">
+                    <input type="number" class="form-input" placeholder="0" min="0" />
+                    <span class="suffix-label">円</span>
+                  </div>
+                </div>
+                <div class="daily-cell">
+                  <label>店販売上</label>
+                  <div class="input-suffix">
+                    <input type="number" class="form-input" placeholder="0" min="0" />
+                    <span class="suffix-label">円</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 次回予約 -->
+          <div class="form-card-section">
+            <div class="form-section-title">次回予約</div>
             <div class="daily-grid">
               <div class="daily-cell">
-                <label>予約件数<span class="form-required">*</span></label>
+                <label>新規次回予約数<span class="form-required">*</span></label>
                 <input type="number" class="form-input" placeholder="0" min="0" />
               </div>
               <div class="daily-cell">
-                <label>来店客数<span class="form-required">*</span></label>
-                <input type="number" class="form-input" placeholder="0" min="0" />
-              </div>
-              <div class="daily-cell">
-                <label>稼働スタイリスト数</label>
-                <input type="number" class="form-input" placeholder="0" min="0" />
-              </div>
-              <div class="daily-cell">
-                <label>総予約枠数</label>
-                <input type="number" class="form-input" placeholder="0" min="0" />
-              </div>
-              <div class="daily-cell">
-                <label>新規客数</label>
-                <input type="number" class="form-input" placeholder="0" min="0" />
-              </div>
-              <div class="daily-cell">
-                <label>リピート客数</label>
+                <label>既存次回予約数<span class="form-required">*</span></label>
                 <input type="number" class="form-input" placeholder="0" min="0" />
               </div>
             </div>

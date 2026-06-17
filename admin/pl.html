@@ -179,7 +179,7 @@
     </div>
   </main>
 
-  <script src="shared.js?v=5"></script>
+  <script src="shared.js?v=6"></script>
   <script>
     renderSidebar('pl');
     buildPLTable();
@@ -187,6 +187,7 @@
     // Separate group-expand state for trend view (independent from PL view)
     const GRP_STATE_TR = {};
     PL_GROUPS.forEach(g => GRP_STATE_TR[g.id] = false);
+    GRP_STATE_TR['fixed'] = false;
 
     function toggleTrendGrp(grpId) {
       GRP_STATE_TR[grpId] = !GRP_STATE_TR[grpId];
@@ -296,19 +297,42 @@
         });
       });
 
-      // 固定費行
-      h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp"><strong>固定費</strong></td>`;
-      data.forEach(d => h += `<td class="col-num">${fmtVal(d.fixed_total, 'num')}</td>`);
-      h += `<td class="col-num">—</td></tr>`;
-
-      // 利益行（ハイライト）、前月比は売上ベースで算出
-      const profitRows = [
+      // 限界利益
+      [
         { id: 'marginal',      label: '限界利益',   fmt: 'num'  },
         { id: 'marginal_rate', label: '限界利益率', fmt: 'pct1' },
-        { id: 'profit',        label: '暫定利益',   fmt: 'num'  },
-        { id: 'profit_rate',   label: '暫定利益率', fmt: 'pct1' },
-      ];
-      profitRows.forEach(t => {
+      ].forEach(t => {
+        h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
+        data.forEach(d => {
+          const val = d[t.id];
+          let cls = 'col-num pl-hl';
+          if (typeof val === 'number') cls += val < 0 ? ' profit-neg' : ' profit-pos';
+          h += `<td class="${cls}">${fmtVal(val, t.fmt)}</td>`;
+        });
+        h += `<td class="col-num">—</td></tr>`;
+      });
+
+      // 固定費（展開可能）
+      h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" data-grbtn="fixed" onclick="toggleTrendGrp('fixed')">▸</button> <strong>固定費合計（税抜）</strong></td>`;
+      data.forEach(d => h += `<td class="col-num">${fmtVal(d.fixed_total, 'num')}</td>`);
+      h += `<td class="col-num">—</td></tr>`;
+      [
+        { id: 'fixed_rate', label: '率',            fmt: 'pct1' },
+        { id: 'f_ren',      label: '家賃',          fmt: 'num'  },
+        { id: 'f_ren_rate', label: '　率',          fmt: 'pct1' },
+        { id: 'f_par',      label: 'お客様駐車場代',fmt: 'num'  },
+        { id: 'f_par_rate', label: '　率',          fmt: 'pct1' },
+      ].forEach(c => {
+        h += `<tr data-d="fixed" style="display:none"><td class="col-sticky pl-td-detail">　${c.label}</td>`;
+        data.forEach(d => h += `<td class="col-num">${fmtVal(d[c.id], c.fmt)}</td>`);
+        h += `<td class="col-num">—</td></tr>`;
+      });
+
+      // 暫定利益
+      [
+        { id: 'profit',      label: '暫定利益',   fmt: 'num'  },
+        { id: 'profit_rate', label: '暫定利益率', fmt: 'pct1' },
+      ].forEach(t => {
         h += `<tr class="pl-grp-row"><td class="col-sticky pl-td-grp pl-hl-th"><strong>${t.label}</strong></td>`;
         data.forEach(d => {
           const val = d[t.id];

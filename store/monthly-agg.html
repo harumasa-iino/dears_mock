@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>月次集計 — DEARS</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .agg-section { margin-bottom: 24px; }
+    .agg-section-title {
+      font-size: 13px; font-weight: 700; color: var(--text-1);
+      margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 2px solid var(--accent);
+    }
+    .agg-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .agg-table th {
+      background: var(--surface-2); color: var(--text-3);
+      font-size: 11px; font-weight: 600; text-align: center;
+      padding: 8px 12px; border-bottom: 1px solid var(--border-mid);
+      white-space: nowrap;
+    }
+    .agg-table th.th-label { text-align: left; min-width: 200px; }
+    .agg-table td {
+      padding: 9px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text-1); vertical-align: middle;
+    }
+    .agg-table td.td-val {
+      text-align: right; font-variant-numeric: tabular-nums;
+      font-size: 13px; color: var(--text-1);
+    }
+    .agg-table td.td-val.total { font-weight: 700; color: var(--accent); }
+    .agg-table tr.row-main td { background: var(--surface-1); font-weight: 600; }
+    .agg-table tr.row-sub td { background: var(--bg); padding-left: 28px; color: var(--text-2); }
+    .agg-table tr.row-sub2 td { background: var(--bg); padding-left: 48px; color: var(--text-3); font-size: 12px; }
+    .badge-yn {
+      display: inline-block; padding: 2px 8px; border-radius: 20px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge-yes { background: #ecfdf5; color: #047857; }
+    .badge-no  { background: #fef2f2; color: #b91c1c; }
+  </style>
+</head>
+<body>
+  <div id="sidebar-mount"></div>
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left"><h1 class="page-title">月次集計</h1></div>
+      <div class="topbar-right">
+        <select class="select-input" style="font-size:13px;">
+          <option>2025年5月</option>
+          <option>2025年4月</option>
+          <option>2025年3月</option>
+        </select>
+      </div>
+    </header>
+    <div class="page-content">
+
+      <!-- スタッフ人数 -->
+      <div class="agg-section">
+        <div class="agg-section-title">スタッフ人数</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th class="th-label">項目</th>
+                <th>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-main">
+                <td>スタッフ人数合計（オーナー含む）</td>
+                <td class="td-val total">3 名</td>
+              </tr>
+              <tr class="row-sub">
+                <td>プレイヤーオーナー在籍</td>
+                <td class="td-val"><span class="badge-yn badge-yes">在籍あり</span></td>
+              </tr>
+              <tr class="row-sub">
+                <td>フルタイム スタッフ数</td>
+                <td class="td-val">1 名</td>
+              </tr>
+              <tr class="row-sub">
+                <td>PAタイム スタッフ数</td>
+                <td class="td-val">1 名</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 予約枠・稼働時間 -->
+      <div class="agg-section">
+        <div class="agg-section-title">予約枠・稼働時間</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th class="th-label">項目</th>
+                <th>オーナー</th>
+                <th>フルタイム</th>
+                <th>PAタイム</th>
+                <th>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-main">
+                <td>予約枠合計時間</td>
+                <td class="td-val">96.0 h</td>
+                <td class="td-val">88.0 h</td>
+                <td class="td-val">44.0 h</td>
+                <td class="td-val total">228.0 h</td>
+              </tr>
+              <tr class="row-main">
+                <td>総稼働時間合計</td>
+                <td class="td-val">80.5 h</td>
+                <td class="td-val">72.0 h</td>
+                <td class="td-val">36.0 h</td>
+                <td class="td-val total">188.5 h</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 入客数 -->
+      <div class="agg-section">
+        <div class="agg-section-title">入客数</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th class="th-label">項目</th>
+                <th>オーナー</th>
+                <th>フルタイム</th>
+                <th>PAタイム</th>
+                <th>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-main">
+                <td>総客数</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val total">412 人</td>
+              </tr>
+              <tr class="row-sub">
+                <td>技術入客数合計</td>
+                <td class="td-val">148</td>
+                <td class="td-val">136</td>
+                <td class="td-val">68</td>
+                <td class="td-val total">352</td>
+              </tr>
+              <tr class="row-sub">
+                <td>店販販売人数合計</td>
+                <td class="td-val">42</td>
+                <td class="td-val">38</td>
+                <td class="td-val">20</td>
+                <td class="td-val total">100</td>
+              </tr>
+              <!-- 新規 -->
+              <tr class="row-sub">
+                <td>新規入客数</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">112 人</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>技術入客数</td>
+                <td class="td-val">38</td>
+                <td class="td-val">34</td>
+                <td class="td-val">16</td>
+                <td class="td-val">88</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>店販販売人数</td>
+                <td class="td-val">10</td>
+                <td class="td-val">10</td>
+                <td class="td-val">4</td>
+                <td class="td-val">24</td>
+              </tr>
+              <!-- 既存 -->
+              <tr class="row-sub">
+                <td>既存入客数</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">300 人</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>技術入客数</td>
+                <td class="td-val">110</td>
+                <td class="td-val">102</td>
+                <td class="td-val">52</td>
+                <td class="td-val">264</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>店販販売人数</td>
+                <td class="td-val">32</td>
+                <td class="td-val">28</td>
+                <td class="td-val">16</td>
+                <td class="td-val">76</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 売上 -->
+      <div class="agg-section">
+        <div class="agg-section-title">売上（税込）</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th class="th-label">項目</th>
+                <th>オーナー</th>
+                <th>フルタイム</th>
+                <th>PAタイム</th>
+                <th>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-main">
+                <td>総売上</td>
+                <td class="td-val">1,480,000</td>
+                <td class="td-val">1,240,000</td>
+                <td class="td-val">580,000</td>
+                <td class="td-val total">3,300,000 円</td>
+              </tr>
+              <tr class="row-sub">
+                <td>技術売上合計</td>
+                <td class="td-val">1,184,000</td>
+                <td class="td-val">992,000</td>
+                <td class="td-val">464,000</td>
+                <td class="td-val total">2,640,000 円</td>
+              </tr>
+              <tr class="row-sub">
+                <td>店販売上合計</td>
+                <td class="td-val">296,000</td>
+                <td class="td-val">248,000</td>
+                <td class="td-val">116,000</td>
+                <td class="td-val total">660,000 円</td>
+              </tr>
+              <!-- 新規 -->
+              <tr class="row-sub">
+                <td>新規売上合計</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">880,000 円</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>技術売上</td>
+                <td class="td-val">304,000</td>
+                <td class="td-val">272,000</td>
+                <td class="td-val">128,000</td>
+                <td class="td-val">704,000 円</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>店販売上</td>
+                <td class="td-val">80,000</td>
+                <td class="td-val">64,000</td>
+                <td class="td-val">32,000</td>
+                <td class="td-val">176,000 円</td>
+              </tr>
+              <!-- 既存 -->
+              <tr class="row-sub">
+                <td>既存売上合計</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">2,420,000 円</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>技術売上</td>
+                <td class="td-val">880,000</td>
+                <td class="td-val">720,000</td>
+                <td class="td-val">336,000</td>
+                <td class="td-val">1,936,000 円</td>
+              </tr>
+              <tr class="row-sub2">
+                <td>店販売上</td>
+                <td class="td-val">216,000</td>
+                <td class="td-val">184,000</td>
+                <td class="td-val">84,000</td>
+                <td class="td-val">484,000 円</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 次回予約 -->
+      <div class="agg-section">
+        <div class="agg-section-title">次回予約</div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="agg-table">
+            <thead>
+              <tr>
+                <th class="th-label">項目</th>
+                <th>オーナー</th>
+                <th>フルタイム</th>
+                <th>PAタイム</th>
+                <th>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-main">
+                <td>次回予約数合計</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val">—</td>
+                <td class="td-val total">298 件</td>
+              </tr>
+              <tr class="row-sub">
+                <td>新規次回予約数</td>
+                <td class="td-val">32</td>
+                <td class="td-val">28</td>
+                <td class="td-val">12</td>
+                <td class="td-val">72 件</td>
+              </tr>
+              <tr class="row-sub">
+                <td>既存次回予約数</td>
+                <td class="td-val">88</td>
+                <td class="td-val">84</td>
+                <td class="td-val">54</td>
+                <td class="td-val">226 件</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+  <script src="shared.js"></script>
+  <script>renderStoreSidebar('monthly-agg');</script>
+</body>
+</html>

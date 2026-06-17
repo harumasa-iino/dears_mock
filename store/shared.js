@@ -44,8 +44,9 @@ const STORE_NAV_ITEMS = [
   { key: 'daily',     label: '日次入力',         icon: '📱', href: 'daily.html' },
   { key: 'monthly',   label: '月次報告',         icon: '📋', href: 'monthly-report.html', ownerOnly: true },
   { section: 'データ' },
-  { key: 'daily-list', label: '日次データ一覧',  icon: '📊', href: 'daily-list.html' },
-  { key: 'accounts',   label: 'アカウント一覧',  icon: '👥', href: 'accounts.html', ownerOnly: true },
+  { key: 'daily-list',   label: '日次データ一覧', icon: '📊', href: 'daily-list.html' },
+  { key: 'monthly-agg', label: '月次集計',        icon: '📈', href: 'monthly-agg.html', ownerOnly: true },
+  { key: 'accounts',    label: 'アカウント一覧',  icon: '👥', href: 'accounts.html', ownerOnly: true },
 ];
 
 const STORE_PROFILES = {
@@ -96,7 +97,7 @@ function renderStoreSidebar(activeKey) {
       ${navHTML}
       <hr class="nav-divider" />
       <div class="nav-external-label">管理画面</div>
-      <a class="nav-item-external" href="../admin/dashboard.html" target="_blank">
+      <a class="nav-item-external" href="../admin/dashboard.html">
         <span class="nav-icon">⬡</span><span>本部管理画面</span>
         <span style="margin-left:auto;font-size:10px;">↗</span>
       </a>

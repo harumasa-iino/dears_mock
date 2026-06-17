@@ -12,18 +12,28 @@
       border-radius: 12px;
       padding: 0;
       overflow: hidden;
-      max-width: 640px;
+      max-width: 760px;
     }
     .form-card-section {
       padding: 20px 24px;
       border-bottom: 1px solid var(--border);
     }
     .form-card-section:last-child { border-bottom: none; }
+    .section-header {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px;
+    }
     .form-section-title {
       font-size: 12px; font-weight: 700; color: var(--text-3);
       text-transform: uppercase; letter-spacing: .05em;
-      margin-bottom: 14px;
     }
+    .section-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .badge-auto   { background: #eff6ff; color: #1d4ed8; }
+    .badge-calc   { background: #f0fdf4; color: #15803d; }
+    .badge-manual { background: #fff7ed; color: #c2410c; }
     .form-row { margin-bottom: 14px; }
     .form-row:last-child { margin-bottom: 0; }
     .form-label {
@@ -38,30 +48,55 @@
       color: var(--text-1); outline: none; box-sizing: border-box;
     }
     .form-input:focus, .form-select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+    .form-input:disabled, .form-select:disabled {
+      background: var(--surface-2); color: var(--text-2);
+      border-color: var(--border); cursor: not-allowed; opacity: 1;
+    }
     .form-textarea {
       width: 100%; padding: 8px 12px; border: 1px solid var(--border-mid);
       border-radius: 7px; font-size: 13px; background: var(--bg);
-      color: var(--text-1); outline: none; resize: vertical; min-height: 80px;
+      color: var(--text-1); outline: none; resize: vertical; min-height: 72px;
       box-sizing: border-box; font-family: inherit;
     }
     .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
     .input-suffix { display: flex; align-items: center; gap: 8px; }
     .input-suffix .form-input { flex: 1; }
     .suffix-label { font-size: 13px; color: var(--text-3); white-space: nowrap; }
-    .budget-notice {
-      background: #eff6ff; border: 1px solid #bfdbfe;
-      border-radius: 8px; padding: 10px 14px;
-      font-size: 12px; color: #1e40af;
-      margin-bottom: 14px;
+    .sub-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px; margin-top: 8px;
     }
+    .sub-grid-2 {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-top: 8px;
+    }
+    .sub-cell label { display: block; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+    .sub-cell .form-input { font-size: 13px; }
+    .sub-label {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      margin-top: 14px; margin-bottom: 6px;
+    }
+    .sub-label:first-child { margin-top: 0; }
+    .check-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .check-item { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text-2); }
+    .check-item input[type=checkbox] { width: 15px; height: 15px; accent-color: var(--accent); }
+    .radio-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .radio-item { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text-2); }
+    .radio-item input[type=radio] { width: 15px; height: 15px; accent-color: var(--accent); }
     .form-success-card {
       background: #ecfdf5; border: 1px solid #a7f3d0;
       border-radius: 12px; padding: 32px 24px; text-align: center;
-      max-width: 640px; display: none;
+      max-width: 760px; display: none;
     }
     .form-success-icon { font-size: 40px; margin-bottom: 12px; }
     .form-success-title { font-size: 18px; font-weight: 700; color: #047857; margin-bottom: 6px; }
     .form-success-sub { font-size: 13px; color: #065f46; }
+    .divider-label {
+      font-size: 11px; font-weight: 700; color: var(--text-3);
+      letter-spacing: .06em; text-transform: uppercase;
+      background: var(--surface-2); padding: 6px 24px;
+      border-bottom: 1px solid var(--border);
+    }
   </style>
 </head>
 <body>
@@ -69,11 +104,17 @@
   <main class="main">
     <header class="topbar">
       <div class="topbar-left"><h1 class="page-title">月次報告</h1></div>
-      <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
+      <div class="topbar-right">
+        <select class="select-input" style="font-size:13px;">
+          <option>2025年5月</option>
+          <option>2025年4月</option>
+          <option>2025年3月</option>
+        </select>
+      </div>
     </header>
     <div class="page-content">
 
-      <div class="account-card" style="max-width:640px;margin-bottom:16px;">
+      <div class="account-card" style="max-width:760px;margin-bottom:16px;">
         <div class="account-avatar">山</div>
         <div class="account-info">
           <div class="account-name">山田 太郎</div>
@@ -87,149 +128,566 @@
       <div id="formBody">
         <div class="form-card">
 
-          <!-- 対象年月 -->
+          <!-- ===== 自動引用セクション ===== -->
+          <div class="divider-label">◎ 月次集計から自動引用</div>
+
+          <!-- スタッフ人数 -->
           <div class="form-card-section">
-            <div class="form-section-title">対象年月</div>
+            <div class="section-header">
+              <span class="form-section-title">スタッフ人数</span>
+              <span class="section-badge badge-auto">自動引用</span>
+            </div>
             <div class="form-row">
-              <label class="form-label">対象年月<span class="form-required">*</span></label>
-              <select class="form-select" style="max-width:200px;">
-                <option>2025年5月</option>
-                <option>2025年4月</option>
-                <option>2025年3月</option>
-              </select>
+              <label class="form-label">スタッフ人数合計（オーナー含む）</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>合計</label>
+                  <div class="input-suffix"><input type="number" class="form-input" value="3" disabled /><span class="suffix-label">名</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム</label>
+                  <div class="input-suffix"><input type="number" class="form-input" value="1" disabled /><span class="suffix-label">名</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム</label>
+                  <div class="input-suffix"><input type="number" class="form-input" value="1" disabled /><span class="suffix-label">名</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">プレイヤーオーナー在籍</label>
+              <input type="text" class="form-input" value="在籍あり" disabled style="max-width:160px;" />
             </div>
           </div>
 
-          <!-- 売上実績 -->
+          <!-- 予約枠・稼働時間 -->
           <div class="form-card-section">
-            <div class="form-section-title">売上実績</div>
+            <div class="section-header">
+              <span class="form-section-title">予約枠・稼働時間</span>
+              <span class="section-badge badge-auto">自動引用</span>
+            </div>
             <div class="form-row">
-              <label class="form-label">技術売上合計<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <label class="form-label">予約枠合計時間</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="96.0" disabled /><span class="suffix-label">h</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="88.0" disabled /><span class="suffix-label">h</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="44.0" disabled /><span class="suffix-label">h</span></div>
+                </div>
               </div>
             </div>
             <div class="form-row">
-              <label class="form-label">物販売上合計</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <label class="form-label">総稼働時間合計</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="80.5" disabled /><span class="suffix-label">h</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="72.0" disabled /><span class="suffix-label">h</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="36.0" disabled /><span class="suffix-label">h</span></div>
+                </div>
               </div>
-            </div>
-            <div class="form-row">
-              <label class="form-label">総来店客数<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">名</span>
-              </div>
-            </div>
-            <div class="form-row">
-              <label class="form-label">稼働率（月平均）<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" max="100" step="0.1" />
-                <span class="suffix-label">%</span>
-              </div>
-              <div class="form-hint">（月の総施術件数 ÷ 月の総予約枠数）× 100</div>
             </div>
           </div>
 
-          <!-- 人件費 -->
+          <!-- 入客数 -->
           <div class="form-card-section">
-            <div class="form-section-title">人件費</div>
+            <div class="section-header">
+              <span class="form-section-title">入客数</span>
+              <span class="section-badge badge-auto">自動引用</span>
+            </div>
             <div class="form-row">
-              <label class="form-label">月間スタッフ数<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" style="max-width:120px;" />
-                <span class="suffix-label">名</span>
+              <label class="form-label">総客数</label>
+              <div class="input-suffix" style="max-width:200px;"><input type="number" class="form-input" value="412" disabled /><span class="suffix-label">人</span></div>
+            </div>
+            <div class="form-row">
+              <div class="sub-label">新規入客数</div>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー（技術）</label>
+                  <input type="number" class="form-input" value="38" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（技術）</label>
+                  <input type="number" class="form-input" value="34" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（技術）</label>
+                  <input type="number" class="form-input" value="16" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>オーナー（店販）</label>
+                  <input type="number" class="form-input" value="10" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（店販）</label>
+                  <input type="number" class="form-input" value="10" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（店販）</label>
+                  <input type="number" class="form-input" value="4" disabled />
+                </div>
               </div>
             </div>
             <div class="form-row">
-              <label class="form-label">人件費合計<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <div class="sub-label">既存入客数</div>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー（技術）</label>
+                  <input type="number" class="form-input" value="110" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（技術）</label>
+                  <input type="number" class="form-input" value="102" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（技術）</label>
+                  <input type="number" class="form-input" value="52" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>オーナー（店販）</label>
+                  <input type="number" class="form-input" value="32" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（店販）</label>
+                  <input type="number" class="form-input" value="28" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（店販）</label>
+                  <input type="number" class="form-input" value="16" disabled />
+                </div>
               </div>
-              <div class="form-hint">給与・社会保険料・交通費等の合計</div>
             </div>
           </div>
+
+          <!-- 売上 -->
+          <div class="form-card-section">
+            <div class="section-header">
+              <span class="form-section-title">売上（税込）</span>
+              <span class="section-badge badge-auto">自動引用</span>
+            </div>
+            <div class="form-row">
+              <label class="form-label">総売上</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="1,480,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="1,240,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="580,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="sub-label">新規売上</div>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="304,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="272,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="128,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>オーナー（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="80,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="64,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="32,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="sub-label">既存売上</div>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>オーナー（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="880,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="720,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（技術）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="336,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>オーナー（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="216,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>フルタイム（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="184,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>PAタイム（店販）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="84,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 次回予約 -->
+          <div class="form-card-section">
+            <div class="section-header">
+              <span class="form-section-title">次回予約</span>
+              <span class="section-badge badge-auto">自動引用</span>
+            </div>
+            <div class="form-row">
+              <label class="form-label">次回予約数合計</label>
+              <div class="input-suffix" style="max-width:200px;"><input type="number" class="form-input" value="298" disabled /><span class="suffix-label">件</span></div>
+            </div>
+            <div class="form-row">
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>新規次回予約（オーナー）</label>
+                  <input type="number" class="form-input" value="32" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>新規次回予約（フルタイム）</label>
+                  <input type="number" class="form-input" value="28" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>新規次回予約（PAタイム）</label>
+                  <input type="number" class="form-input" value="12" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>既存次回予約（オーナー）</label>
+                  <input type="number" class="form-input" value="88" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>既存次回予約（フルタイム）</label>
+                  <input type="number" class="form-input" value="84" disabled />
+                </div>
+                <div class="sub-cell">
+                  <label>既存次回予約（PAタイム）</label>
+                  <input type="number" class="form-input" value="54" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 算出項目セクション ===== -->
+          <div class="divider-label">○ 集計から算出</div>
+
+          <div class="form-card-section">
+            <div class="section-header">
+              <span class="form-section-title">算出指標</span>
+              <span class="section-badge badge-calc">自動算出</span>
+            </div>
+            <div class="form-row">
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>空き席数（時間差）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="39.5" disabled /><span class="suffix-label">h</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>次回予約率（合計）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="72.3" disabled /><span class="suffix-label">%</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>ロイヤリティ（チェック用）</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="330,000" disabled /><span class="suffix-label">円</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>新規次回予約率</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="64.3" disabled /><span class="suffix-label">%</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>既存次回予約率</label>
+                  <div class="input-suffix"><input type="text" class="form-input" value="75.3" disabled /><span class="suffix-label">%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== 手動入力セクション ===== -->
+          <div class="divider-label">△ 別途入力が必要な項目</div>
 
           <!-- 変動費 -->
           <div class="form-card-section">
-            <div class="form-section-title">変動費</div>
-            <div class="form-row">
-              <label class="form-label">薬剤費<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+            <div class="section-header">
+              <span class="form-section-title">変動費（税込）</span>
+              <span class="section-badge badge-manual">要入力</span>
+            </div>
+            <div class="sub-grid">
+              <div class="sub-cell">
+                <label>人件費<span class="form-required">*</span></label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>法定福利費</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>スタッフ交通費</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>薬剤費<span class="form-required">*</span></label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>ロイヤリティ<span class="form-required">*</span></label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
               </div>
             </div>
-            <div class="form-row">
-              <label class="form-label">消耗品費</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+            <div class="sub-label">集客広告費</div>
+            <div class="sub-grid">
+              <div class="sub-cell">
+                <label>本部</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>HPB</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>チラシ</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+            </div>
+            <div class="sub-label">求人広告費</div>
+            <div class="sub-grid">
+              <div class="sub-cell">
+                <label>本部</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
+              </div>
+              <div class="sub-cell">
+                <label>外部</label>
+                <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">円</span></div>
               </div>
             </div>
           </div>
 
-          <!-- 固定費 -->
+          <!-- 新規集客実績 -->
           <div class="form-card-section">
-            <div class="form-section-title">固定費</div>
-            <div class="form-row">
-              <label class="form-label">家賃<span class="form-required">*</span></label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
-              </div>
-              <div class="form-hint">前月から変更がなければ前回入力値が自動で入ります（本実装時）</div>
+            <div class="section-header">
+              <span class="form-section-title">新規集客実績</span>
+              <span class="section-badge badge-manual">要入力</span>
             </div>
             <div class="form-row">
-              <label class="form-label">水道光熱費</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <label class="form-label">問合せ数</label>
+              <div class="sub-grid-2">
+                <div class="sub-cell">
+                  <label>予約数</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>相談のみ</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+              </div>
+              <div class="form-hint">問合せ数合計 = 予約数 + 相談のみ</div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">問合せ手段</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>LINE</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>電話</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>その他</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
               </div>
             </div>
             <div class="form-row">
-              <label class="form-label">その他経費</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" />
-                <span class="suffix-label">円</span>
+              <label class="form-label">認知経路</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>HP</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>HPB</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>Instagram</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>Facebook</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>紹介</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>チラシ</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>その他</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>不明</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="sub-label">HPB 新規集客実績</div>
+              <div class="sub-grid-2">
+                <div class="sub-cell">
+                  <label>予約数</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>来店数</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">人</span></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 広告予算申請 -->
+          <!-- 求人実績 -->
           <div class="form-card-section">
-            <div class="form-section-title">来月の広告予算申請</div>
-            <div class="budget-notice">
-              ℹ 申請期日は毎月<strong>25日</strong>です。期日を過ぎた場合は前月の予算が自動適用されます。
+            <div class="section-header">
+              <span class="form-section-title">求人実績</span>
+              <span class="section-badge badge-manual">要入力</span>
             </div>
             <div class="form-row">
-              <label class="form-label">集客広告予算（来月）</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
-                <span class="suffix-label">円</span>
+              <div class="sub-grid-2">
+                <div class="sub-cell">
+                  <label>採用数</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">名</span></div>
+                </div>
               </div>
-              <div class="form-hint">Meta / Google Ads の集客広告予算（来月分）</div>
             </div>
             <div class="form-row">
-              <label class="form-label">求人広告予算（来月）</label>
-              <div class="input-suffix">
-                <input type="number" class="form-input" placeholder="0" min="0" step="10000" />
-                <span class="suffix-label">円</span>
+              <label class="form-label">問合せ数</label>
+              <div class="sub-grid-2">
+                <div class="sub-cell">
+                  <label>面談数</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>相談のみ</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
               </div>
-              <div class="form-hint">Indeed / スタッフサービス等の求人広告予算（来月分）</div>
+              <div class="form-hint">問合せ数合計 = 面談数 + 相談のみ</div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">問合せ手段</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>LINE</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>電話</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>その他</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">認知経路</label>
+              <div class="sub-grid">
+                <div class="sub-cell">
+                  <label>HP</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>ポータルサイト</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>Instagram</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>Facebook</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>紹介</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>その他</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+                <div class="sub-cell">
+                  <label>不明</label>
+                  <div class="input-suffix"><input type="number" class="form-input" placeholder="0" min="0" /><span class="suffix-label">件</span></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <!-- 備考 -->
+          <!-- その他 -->
           <div class="form-card-section">
-            <div class="form-section-title">備考・連絡事項</div>
+            <div class="section-header">
+              <span class="form-section-title">その他</span>
+              <span class="section-badge badge-manual">要入力</span>
+            </div>
             <div class="form-row">
-              <label class="form-label">本部への連絡事項</label>
-              <textarea class="form-textarea" placeholder="設備故障・スタッフ異動・特別プロモーション等、本部に共有したい事項があれば記入"></textarea>
+              <label class="form-label">ロイヤリティ特別措置</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="royalty-sp" /> なし</label>
+                <label class="radio-item"><input type="radio" name="royalty-sp" /> あり（詳細を備考に記入）</label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">出店打診可否</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="expansion" /> 不可</label>
+                <label class="radio-item"><input type="radio" name="expansion" /> 検討可</label>
+                <label class="radio-item"><input type="radio" name="expansion" /> 積極的に希望</label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">求人希望の有無</label>
+              <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="hiring" /> なし</label>
+                <label class="radio-item"><input type="radio" name="hiring" /> あり</label>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">確認事項・備考</label>
+              <textarea class="form-textarea" placeholder="ロイヤリティ特別措置の詳細・設備故障・スタッフ異動・特別プロモーション等、本部に共有したい事項があれば記入"></textarea>
             </div>
           </div>
 
@@ -248,7 +706,7 @@
         <div class="form-success-icon">✅</div>
         <div class="form-success-title">月次報告を受け付けました！</div>
         <div class="form-success-sub">報告内容は本部で確認後、PL画面に反映されます。ご報告ありがとうございました。</div>
-        <a href="index.html" class="btn-ghost" style="margin-top:20px;display:inline-block;">ホームに戻る</a>
+        <a href="dashboard.html" class="btn-ghost" style="margin-top:20px;display:inline-block;">ダッシュボードに戻る</a>
       </div>
 
     </div>

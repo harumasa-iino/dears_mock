@@ -5,6 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>広告データ連携 — DEARS</title>
   <link rel="stylesheet" href="../style.css?v=4" />
+  <style>
+    .page-tabs { display:flex;gap:0;border-bottom:2px solid var(--border-mid);margin-bottom:20px; }
+    .page-tab { padding:10px 20px;font-size:14px;font-weight:500;color:var(--text-3);background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:color .15s; }
+    .page-tab:hover { color:var(--text-1); }
+    .page-tab.active { color:var(--accent);font-weight:600;border-bottom-color:var(--accent); }
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; }
+    .api-reflect-card { border:1px solid var(--border-mid);border-radius:8px;padding:14px 16px;margin-bottom:10px;background:var(--surface-2);display:flex;align-items:center;gap:12px; }
+    .api-reflect-store { font-size:13px;font-weight:600;flex:1; }
+    .api-reflect-budget { font-size:12px;color:var(--text-3);min-width:200px; }
+    .api-reflect-status { min-width:80px;text-align:center; }
+    .reflect-ok   { color:var(--green);font-size:11px;font-weight:600; }
+    .reflect-warn { color:#f59e0b;font-size:11px;font-weight:600; }
+    .reflect-err  { color:var(--red);font-size:11px;font-weight:600; }
+    .mapping-edit-row { display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--border); }
+    .mapping-store-name { font-size:13px;font-weight:600;min-width:120px; }
+    .mapping-input { font-family:monospace;font-size:11px;background:var(--surface-1);border:1px solid var(--border-mid);border-radius:6px;padding:5px 8px;flex:1;color:var(--text-2); }
+    .mapping-input:focus { outline:2px solid var(--accent);border-color:transparent; }
+  </style>
 </head>
 <body>
   <div id="sidebar-mount"></div>
@@ -14,90 +33,206 @@
       <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
     </header>
     <div class="page-content">
-      <div class="filter-bar">
-        <div class="filter-group">
-          <label>対象月</label>
-          <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
-        </div>
-        <div class="filter-group">
-          <label>媒体</label>
-          <select class="select-input"><option>全て</option><option>Meta</option><option>Google</option></select>
-        </div>
-        <div class="filter-spacer"></div>
-        <button class="btn-primary">今すぐ同期</button>
-        <button class="btn-ghost">CSV ↓</button>
+
+      <!-- タブ -->
+      <div class="page-tabs">
+        <button class="page-tab active" onclick="switchAdsTab('fetch')">消化実績</button>
+        <button class="page-tab" onclick="switchAdsTab('reflect')">予算→API反映</button>
+        <button class="page-tab" onclick="switchAdsTab('mapping')">広告ID管理</button>
       </div>
 
-      <div class="billing-summary">
-        <div class="billing-sum-card">
-          <div class="billing-sum-label">Meta 広告費合計</div>
-          <div class="billing-sum-val">¥1,215,000</div>
-          <div class="billing-sum-note">7店舗 / 最終取得 5/31 09:02</div>
+      <!-- ===== 消化実績タブ ===== -->
+      <div id="tab-fetch" class="tab-panel active">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>対象月</label>
+            <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+          </div>
+          <div class="filter-group">
+            <label>媒体</label>
+            <select class="select-input"><option>全て</option><option>Meta</option><option>Google</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-primary">今すぐ同期</button>
+          <button class="btn-ghost">CSV ↓</button>
         </div>
-        <div class="billing-sum-card">
-          <div class="billing-sum-label">Google 広告費合計</div>
-          <div class="billing-sum-val">¥620,000</div>
-          <div class="billing-sum-note">5店舗 / 最終取得 5/31 09:02</div>
+
+        <div class="billing-summary">
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">Meta 広告費合計</div>
+            <div class="billing-sum-val">¥1,215,000</div>
+            <div class="billing-sum-note">7店舗 / 最終取得 5/31 09:02</div>
+          </div>
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">Google 広告費合計</div>
+            <div class="billing-sum-val">¥620,000</div>
+            <div class="billing-sum-note">5店舗 / 最終取得 5/31 09:02</div>
+          </div>
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">連携エラー</div>
+            <div class="billing-sum-val" style="color:var(--red)">1</div>
+            <div class="billing-sum-note">要確認：福岡天神店 Google</div>
+          </div>
         </div>
-        <div class="billing-sum-card">
-          <div class="billing-sum-label">連携エラー</div>
-          <div class="billing-sum-val" style="color:var(--red)">1</div>
-          <div class="billing-sum-note">要確認：福岡天神店 Google</div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">広告データ取得状況 — 2025年5月</span>
+            <span style="font-size:11px;color:var(--text-3)">毎日 09:00 に自動取得</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>店舗名</th><th>区分</th>
+                  <th class="col-num">Meta 消化額</th><th>Meta 状態</th>
+                  <th class="col-num">Google 消化額</th><th>Google 状態</th>
+                  <th>最終取得</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>表参道店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                  <td class="col-num">335,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">45,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+                </tr>
+                <tr>
+                  <td><strong>渋谷店</strong></td><td><span class="tag tag-direct">直営</span></td>
+                  <td class="col-num">280,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">40,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+                </tr>
+                <tr>
+                  <td><strong>大阪梅田店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                  <td class="col-num">240,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">65,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
+                </tr>
+                <tr class="row-alert">
+                  <td><strong>福岡天神店</strong></td><td><span class="tag tag-fc">FC</span></td>
+                  <td class="col-num">120,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num" style="color:var(--red)">—</td>
+                  <td><span class="status-badge status-inactive">エラー</span></td>
+                  <td>5/30 09:02</td>
+                  <td><div class="action-btns">
+                    <button class="btn-xs btn-xs-danger">再取得</button>
+                    <button class="btn-xs" onclick="switchAdsTab('mapping')">ID確認</button>
+                  </div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-note">※ 消化実績はPL画面の変動費（広告費）に自動反映されます</div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">広告データ取得状況 — 2025年5月</span>
+      <!-- ===== 予算→API反映タブ ===== -->
+      <div id="tab-reflect" class="tab-panel">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px;text-align:center;padding:40px 20px;">
+          <div style="font-size:40px;">🚧</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text-1);">次スコープで開発予定</div>
+          <div style="font-size:13px;color:var(--text-3);max-width:480px;line-height:1.7;">
+            予算管理で確定した月次予算を Meta / Google Ads の日予算へ自動反映する機能は、現在のスコープには含まれていません。<br>
+            次スコープにて、店舗別の反映ステータス表示・一括反映・個別再反映ボタンを実装予定です。
+          </div>
+          <div style="background:var(--surface-3);border:1px solid var(--border-mid);border-radius:8px;padding:12px 20px;font-size:12px;color:var(--text-3);text-align:left;max-width:480px;width:100%;">
+            <div style="font-weight:700;color:var(--text-2);margin-bottom:8px;">次スコープで実装する内容</div>
+            <ul style="margin:0;padding-left:18px;line-height:2;">
+              <li>店舗×媒体（Meta / Google）ごとの反映ステータス表示</li>
+              <li>確定予算 → 日予算換算（月額 ÷ 稼働日数）の表示</li>
+              <li>全店舗一括反映ボタン</li>
+              <li>個別店舗の再反映・エラー時の再試行</li>
+            </ul>
+          </div>
         </div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>店舗名</th><th>区分</th>
-                <th class="col-num">Meta 消化額</th><th>Meta 状態</th>
-                <th class="col-num">Google 消化額</th><th>Google 状態</th>
-                <th>最終取得</th><th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>表参道店</strong></td><td><span class="tag tag-direct">直営</span></td>
-                <td class="col-num">335,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td class="col-num">45,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
-              </tr>
-              <tr>
-                <td><strong>渋谷店</strong></td><td><span class="tag tag-direct">直営</span></td>
-                <td class="col-num">280,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td class="col-num">40,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
-              </tr>
-              <tr>
-                <td><strong>大阪梅田店</strong></td><td><span class="tag tag-fc">FC</span></td>
-                <td class="col-num">240,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td class="col-num">65,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
-              </tr>
-              <tr class="row-alert">
-                <td><strong>福岡天神店</strong></td><td><span class="tag tag-fc">FC</span></td>
-                <td class="col-num">120,000</td><td><span class="status-badge status-active">正常</span></td>
-                <td class="col-num" style="color:var(--red)">—</td>
-                <td><span class="status-badge status-inactive">エラー</span></td>
-                <td>5/30 09:02</td>
-                <td><div class="action-btns">
-                  <button class="btn-xs btn-xs-danger">再取得</button>
-                  <button class="btn-xs">ID確認</button>
-                </div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="table-note">※ 毎日 09:00 に自動取得 | Meta広告セットID・Google広告キャンペーンIDは<a href="stores.html" class="link-text">店舗マスタ</a>で設定</div>
       </div>
+
+      <!-- ===== 広告ID管理タブ ===== -->
+      <div id="tab-mapping" class="tab-panel">
+        <div class="info-banner" style="background:#fefce8;border:1px solid #fde68a;border-radius:8px;padding:10px 16px;margin-bottom:16px;font-size:12px;color:#92400e;display:flex;gap:8px;align-items:flex-start;">
+          <span>⚠</span>
+          <span>広告アカウントID・キャンペーンIDは店舗と広告プラットフォームの対応付けに使用されます。誤った値を設定すると消化データの取得・予算反映が失敗します。</span>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">広告ID対応テーブル</span>
+            <button class="btn-primary" onclick="saveMappings()">変更を保存</button>
+          </div>
+          <div style="padding:0 20px 16px;">
+            <div style="display:grid;grid-template-columns:130px 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:2px solid var(--border-mid);font-size:11px;font-weight:700;color:var(--text-3);">
+              <span>店舗名</span><span>Meta 広告セットID</span><span>Google キャンペーンID</span><span>状態</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">表参道店</span>
+              <input class="mapping-input" value="act_123456789_adset_001" />
+              <input class="mapping-input" value="9876543210" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">渋谷店</span>
+              <input class="mapping-input" value="act_123456789_adset_002" />
+              <input class="mapping-input" value="8765432109" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">新宿店</span>
+              <input class="mapping-input" value="act_123456789_adset_003" />
+              <input class="mapping-input" value="7654321098" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">大阪梅田店</span>
+              <input class="mapping-input" value="act_987654321_adset_001" />
+              <input class="mapping-input" value="6543210987" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">名古屋栄店</span>
+              <input class="mapping-input" value="act_987654321_adset_002" />
+              <input class="mapping-input" value="5432109876" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row">
+              <span class="mapping-store-name">心斎橋店</span>
+              <input class="mapping-input" value="act_987654321_adset_003" />
+              <input class="mapping-input" value="4321098765" />
+              <span class="status-badge status-active">正常</span>
+            </div>
+            <div class="mapping-edit-row" style="background:#fff5f5;border-radius:6px;padding:10px;border:1px solid #fca5a5;">
+              <span class="mapping-store-name" style="color:var(--red)">福岡天神店</span>
+              <input class="mapping-input" value="act_987654321_adset_007" style="border-color:#fca5a5;" />
+              <input class="mapping-input" value="" placeholder="未設定 — IDを入力" style="border-color:#fca5a5;" />
+              <span class="status-badge status-inactive">エラー</span>
+            </div>
+          </div>
+          <div class="table-note">※ IDはMeta Business Manager / Google Ads管理画面で確認できます | 変更後は「変更を保存」をクリックし、消化実績タブで再取得してください</div>
+        </div>
+      </div>
+
     </div>
   </main>
   <script src="shared.js?v=5"></script>
-  <script>renderSidebar('ads');</script>
+  <script>
+    renderSidebar('ads');
+    function switchAdsTab(tab) {
+      document.querySelectorAll('.page-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('onclick') === `switchAdsTab('${tab}')`);
+      });
+      ['fetch','reflect','mapping'].forEach(k => {
+        const el = document.getElementById('tab-' + k);
+        if (el) el.classList.toggle('active', k === tab);
+      });
+    }
+    function reflectAll() {
+      alert('全店舗の確定予算をMeta・Google Ads APIへ反映しました（本実装時）');
+    }
+    function reflectStore(name) {
+      alert(name + ' のGoogle Ads APIへの反映を再試行しました（本実装時）\nIDを正しく設定後に再実行してください');
+    }
+    function saveMappings() {
+      alert('広告ID対応テーブルを保存しました（本実装時）\n消化実績タブで再取得してください');
+    }
+  </script>
 </body>
 </html>

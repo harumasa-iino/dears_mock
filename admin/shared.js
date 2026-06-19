@@ -556,6 +556,78 @@ function computeStore(s) {
   return d;
 }
 
+function computeMedian(data) {
+  const m = { name:'中央値', type:'__median__', _isMedian:true, po:null };
+  const allKeys = [
+    'staff_total','empty_seats','ft_count','pat_count',
+    'sales','sales_ft','sales_pat','sales_ow',
+    'sales_tech','ft_tech','pat_tech','ow_tech',
+    'sales_retail','ft_retail','pat_retail','ow_retail',
+    'new_sales','new_sales_tech','new_ft_tech','new_pat_tech','new_ow_tech',
+    'new_sales_retail','new_ft_retail','new_pat_retail','new_ow_retail',
+    'exist_sales','exist_sales_tech','exist_ft_tech','exist_pat_tech','exist_ow_tech',
+    'exist_sales_retail','exist_ft_retail','exist_pat_retail','exist_ow_retail',
+    'v_lab','v_wel','v_tra','v_mat','v_roy','v_oth',
+    'a_hq','a_hpb','a_fly','a_rhq','a_rex',
+    'a_attract_total','a_recruit_total','adcost_total','vcost_total','fixed_total',
+    'f_ren','f_par','marginal','profit',
+    'occ','occ_ft','occ_pat','occ_ow',
+    'labor_prod','labor_prod_ft','labor_prod_pat','labor_prod_ow',
+    'prod_val','prod_val_ft','prod_val_pat','prod_val_ow',
+    'unit_price','unit_price_ft','unit_price_pat','unit_price_ow',
+    'tech_unit','tech_unit_ft','tech_unit_pat','tech_unit_ow',
+    'retail_unit','retail_unit_ft','retail_unit_pat','retail_unit_ow',
+    'retail_ratio','retail_ratio_ft','retail_ratio_pat','retail_ratio_ow',
+  ];
+  allKeys.forEach(k => {
+    const vals = data.map(d => d[k]).filter(v => v !== undefined && v !== null).sort((a, b) => a - b);
+    const mid = Math.floor(vals.length / 2);
+    m[k] = vals.length % 2 !== 0 ? vals[mid] : (vals[mid - 1] + vals[mid]) / 2;
+  });
+  const pct = v => m.sales > 0 ? +((v / m.sales) * 100).toFixed(1) : 0;
+  m.vcost_rate=pct(m.vcost_total); m.v_lab_rate=pct(m.v_lab); m.v_wel_rate=pct(m.v_wel);
+  m.v_tra_rate=pct(m.v_tra); m.v_mat_rate=pct(m.v_mat); m.v_roy_rate=pct(m.v_roy);
+  m.a_attract_rate=pct(m.a_attract_total); m.a_hq_rate=pct(m.a_hq); m.a_hpb_rate=pct(m.a_hpb);
+  m.a_fly_rate=pct(m.a_fly); m.a_recruit_rate=pct(m.a_recruit_total); m.a_rhq_rate=pct(m.a_rhq);
+  m.a_rex_rate=pct(m.a_rex); m.v_oth_rate=pct(m.v_oth);
+  m.fixed_rate=pct(m.fixed_total); m.f_ren_rate=pct(m.f_ren); m.f_par_rate=pct(m.f_par||0);
+  m.marginal_rate=pct(m.marginal); m.profit_rate=pct(m.profit);
+  return m;
+}
+
+function computeAverages(data) {
+  const a = { name:'平均', type:'__avg__', _isAvg:true, po:null };
+  const n = data.length;
+  const avgKeys = [
+    'staff_total','empty_seats','ft_count','pat_count',
+    'sales','sales_ft','sales_pat','sales_ow',
+    'sales_tech','ft_tech','pat_tech','ow_tech',
+    'sales_retail','ft_retail','pat_retail','ow_retail',
+    'new_sales','exist_sales',
+    'v_lab','v_wel','v_tra','v_mat','v_roy','v_oth',
+    'a_hq','a_hpb','a_fly','a_rhq','a_rex',
+    'a_attract_total','a_recruit_total','adcost_total','vcost_total','fixed_total',
+    'f_ren','f_par','marginal','profit',
+    'occ','occ_ft','occ_pat','occ_ow',
+    'labor_prod','labor_prod_ft','labor_prod_pat','labor_prod_ow',
+    'prod_val','prod_val_ft','prod_val_pat','prod_val_ow',
+    'unit_price','unit_price_ft','unit_price_pat','unit_price_ow',
+    'tech_unit','tech_unit_ft','tech_unit_pat','tech_unit_ow',
+    'retail_unit','retail_unit_ft','retail_unit_pat','retail_unit_ow',
+    'retail_ratio','retail_ratio_ft','retail_ratio_pat','retail_ratio_ow',
+  ];
+  avgKeys.forEach(k => { a[k] = data.reduce((s, d) => s + (d[k] || 0), 0) / n; });
+  const pct = v => a.sales > 0 ? +((v / a.sales) * 100).toFixed(1) : 0;
+  a.vcost_rate=pct(a.vcost_total); a.v_lab_rate=pct(a.v_lab); a.v_wel_rate=pct(a.v_wel);
+  a.v_tra_rate=pct(a.v_tra); a.v_mat_rate=pct(a.v_mat); a.v_roy_rate=pct(a.v_roy);
+  a.a_attract_rate=pct(a.a_attract_total); a.a_hq_rate=pct(a.a_hq); a.a_hpb_rate=pct(a.a_hpb);
+  a.a_fly_rate=pct(a.a_fly); a.a_recruit_rate=pct(a.a_recruit_total); a.a_rhq_rate=pct(a.a_rhq);
+  a.a_rex_rate=pct(a.a_rex); a.v_oth_rate=pct(a.v_oth);
+  a.fixed_rate=pct(a.fixed_total); a.f_ren_rate=pct(a.f_ren); a.f_par_rate=pct(a.f_par||0);
+  a.marginal_rate=pct(a.marginal); a.profit_rate=pct(a.profit);
+  return a;
+}
+
 function computeTotals(data) {
   const t = { name:'合計', type:'__total__', _isTotal:true, po:null };
   const sumKeys = [
@@ -604,8 +676,10 @@ GRP_STATE['fixed'] = false;
 
 function buildPLTable() {
   const data = PL_STORE_DATA.map(computeStore);
-  const totals = computeTotals(data);
-  const allStores = [totals, ...data];
+  const totals  = computeTotals(data);
+  const avgs    = computeAverages(data);
+  const medians = computeMedian(data);
+  const allStores = [totals, avgs, medians, ...data];
 
   let h = `<div class="table-wrap"><table class="data-table pl-tbl" id="plTable">`;
 
@@ -614,7 +688,11 @@ function buildPLTable() {
   h += `<th class="col-sticky pl-th-item">項目</th>`;
   allStores.forEach(s => {
     if (s._isTotal) {
-      h += `<th class="col-num pl-th-store"><strong>合計</strong></th>`;
+      h += `<th class="col-num pl-th-store" style="background:var(--surface-3)"><strong>合計</strong></th>`;
+    } else if (s._isAvg) {
+      h += `<th class="col-num pl-th-store" style="background:var(--surface-3)"><strong>平均</strong></th>`;
+    } else if (s._isMedian) {
+      h += `<th class="col-num pl-th-store" style="background:var(--surface-3)"><strong>中央値</strong></th>`;
     } else {
       const typeTag = s.type === 'direct'
         ? '<span class="tag tag-direct" style="font-size:9px;padding:1px 5px;">直営</span>'
@@ -640,8 +718,8 @@ function buildPLTable() {
     h += `</td>`;
     allStores.forEach(s => {
       const val = summaryCol ? s[summaryCol.id] : null;
-      const isTotRow = s._isTotal;
-      h += `<td class="col-num${isTotRow ? ' row-summary-cell' : ''}">${fmtVal(val, summaryCol ? summaryCol.fmt : undefined)}</td>`;
+      const isAgg = s._isTotal || s._isAvg || s._isMedian;
+      h += `<td class="col-num${isAgg ? ' row-summary-cell' : ''}">${fmtVal(val, summaryCol ? summaryCol.fmt : undefined)}</td>`;
     });
     h += `</tr>`;
 
@@ -675,7 +753,7 @@ function buildPLTable() {
   const fixedGrpId = 'fixed';
   h += `<tr class="pl-grp-row">`;
   h += `<td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" data-grbtn="${fixedGrpId}" onclick="toggleGrp('${fixedGrpId}')">▸</button> <strong>固定費合計（税抜）</strong></td>`;
-  allStores.forEach(s => h += `<td class="col-num${s._isTotal ? ' row-summary-cell' : ''}">${fmtVal(s.fixed_total, 'num')}</td>`);
+  allStores.forEach(s => h += `<td class="col-num${(s._isTotal||s._isAvg||s._isMedian) ? ' row-summary-cell' : ''}">${fmtVal(s.fixed_total, 'num')}</td>`);
   h += `</tr>`;
   [
     { id: 'fixed_rate', label: '率',               fmt: 'pct1' },

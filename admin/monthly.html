@@ -76,6 +76,20 @@
       <div class="topbar-right"><div class="topbar-date">2025年5月</div></div>
     </header>
     <div class="page-content">
+
+      <!-- sheetSync同期ステータスバー (REQ 11) -->
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1px solid var(--border-mid);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:12px;">
+        <span style="font-weight:700;color:var(--text-2)">スプレッドシート同期（sheetSync.gs → MySQL）</span>
+        <span style="color:var(--green);font-weight:600;">✓ 正常</span>
+        <span style="color:var(--text-3);">最終同期: <strong>2025/05/31 06:30</strong></span>
+        <span style="color:var(--text-3);">|</span>
+        <span style="color:var(--text-3);">7店舗 × 月次報告集計シート → monthly_reports テーブル</span>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+          <span style="color:var(--text-3);font-size:11px;">次回自動同期: 毎日 06:30</span>
+          <button class="btn-xs" onclick="triggerSync(this)">今すぐ同期</button>
+        </div>
+      </div>
+
       <div class="filter-bar">
         <div class="filter-group">
           <label>対象月</label>
@@ -861,6 +875,18 @@
       // 代わりに「サマリーセルの直後に data-grp=name の詳細セルが来る」構造を使って判定
       const next = td.nextElementSibling;
       return next && next.dataset && next.dataset.grp === name;
+    }
+
+    function triggerSync(btn) {
+      btn.disabled = true;
+      btn.textContent = '同期中…';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = '今すぐ同期';
+        const now = new Date();
+        const ts = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        btn.closest('div[style]').querySelector('strong').textContent = ts;
+      }, 1500);
     }
   </script>
 </body>

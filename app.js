@@ -351,31 +351,81 @@ function openTrend(storeName) {
   document.getElementById('trendModalTitle').textContent = storeName + ' — 月別推移';
   const maxSales = Math.max(...data.map(d => d.sales));
 
-  // Bar chart
+  // Line chart (SVG)
   const chartEl = document.getElementById('trendChart');
   chartEl.innerHTML = '';
-  data.forEach(d => {
-    const sp = Math.round(d.sales                           / maxSales * 90);
-    const mp = Math.round(Math.max(d.marginal,0)           / maxSales * 90);
-    const pp = Math.round(Math.max(d.profit,0)             / maxSales * 90);
-    const col = document.createElement('div');
-    col.className = 'bar-col';
-    col.style.position = 'relative';
-    const bg = document.createElement('div');
-    bg.style.cssText = 'display:flex;gap:2px;align-items:flex-end;width:100%;height:96px;';
-    const mkBar = (pct, cls) => {
-      const b = document.createElement('div');
-      b.className = 'bar-fill ' + cls;
-      b.style.cssText = `height:${pct}%;flex:1;`;
-      return b;
-    };
-    bg.append(mkBar(sp,'bar-fill-blue'), mkBar(mp,'bar-fill-green'), mkBar(pp, d.profit<0?'bar-fill-red':'bar-fill-green'));
-    const lbl = document.createElement('div');
-    lbl.className = 'bar-month';
-    lbl.textContent = d.month;
-    col.append(bg, lbl);
-    chartEl.appendChild(col);
+  const W = 560, H = 120, padL = 40, padR = 10, padT = 10, padB = 24;
+  const innerW = W - padL - padR;
+  const innerH = H - padT - padB;
+  const n = data.length;
+  const minVal = Math.min(...data.map(d => d.profit));
+  const maxVal = maxSales;
+  const valRange = maxVal - Math.min(minVal, 0);
+  const xPos = i => padL + (i / (n - 1)) * innerW;
+  const yPos = v => padT + innerH - ((v - Math.min(minVal, 0)) / valRange) * innerH;
+
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.cssText = 'width:100%;height:auto;';
+
+  // Zero line
+  const zeroY = yPos(0);
+  const zeroLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  zeroLine.setAttribute('x1', padL); zeroLine.setAttribute('x2', W - padR);
+  zeroLine.setAttribute('y1', zeroY); zeroLine.setAttribute('y2', zeroY);
+  zeroLine.setAttribute('stroke', '#ddd'); zeroLine.setAttribute('stroke-dasharray', '3 3');
+  svg.appendChild(zeroLine);
+
+  const mkLine = (key, color) => {
+    const pts = data.map((d, i) => `${xPos(i)},${yPos(d[key])}`).join(' ');
+    const pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    pl.setAttribute('points', pts);
+    pl.setAttribute('fill', 'none');
+    pl.setAttribute('stroke', color);
+    pl.setAttribute('stroke-width', '2');
+    pl.setAttribute('stroke-linejoin', 'round');
+    pl.setAttribute('stroke-linecap', 'round');
+    svg.appendChild(pl);
+    data.forEach((d, i) => {
+      const cx = xPos(i), cy = yPos(d[key]);
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', '3');
+      circle.setAttribute('fill', color);
+      svg.appendChild(circle);
+    });
+  };
+
+  mkLine('sales',    '#4361ee');
+  mkLine('marginal', '#2ec4b6');
+  mkLine('profit',   '#e63946');
+
+  // X labels
+  data.forEach((d, i) => {
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', xPos(i)); txt.setAttribute('y', H - 4);
+    txt.setAttribute('text-anchor', 'middle');
+    txt.setAttribute('font-size', '9'); txt.setAttribute('fill', '#666');
+    txt.textContent = d.month;
+    svg.appendChild(txt);
   });
+
+  // Legend
+  const legend = [['売上','#4361ee'], ['限界利益','#2ec4b6'], ['利益','#e63946']];
+  legend.forEach(([label, color], i) => {
+    const lx = padL + i * 90;
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', lx); rect.setAttribute('y', padT);
+    rect.setAttribute('width', '16'); rect.setAttribute('height', '3');
+    rect.setAttribute('fill', color); rect.setAttribute('rx', '1');
+    svg.appendChild(rect);
+    const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    txt.setAttribute('x', lx + 20); txt.setAttribute('y', padT + 5);
+    txt.setAttribute('font-size', '9'); txt.setAttribute('fill', '#555');
+    txt.textContent = label;
+    svg.appendChild(txt);
+  });
+
+  chartEl.appendChild(svg);
 
   // Table
   const tbody = document.getElementById('trendTableBody');

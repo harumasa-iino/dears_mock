@@ -37,6 +37,7 @@
       <!-- タブ -->
       <div class="page-tabs">
         <button class="page-tab active" onclick="switchAdsTab('fetch')">消化実績</button>
+        <button class="page-tab" onclick="switchAdsTab('funnel')">ファネル分析</button>
         <button class="page-tab" onclick="switchAdsTab('reflect')">予算→API反映</button>
         <button class="page-tab" onclick="switchAdsTab('mapping')">広告ID管理</button>
       </div>
@@ -50,7 +51,7 @@
           </div>
           <div class="filter-group">
             <label>媒体</label>
-            <select class="select-input"><option>全て</option><option>Meta</option><option>Google</option></select>
+            <select class="select-input"><option>全て</option><option>Meta</option><option>Google</option><option>LINE</option></select>
           </div>
           <div class="filter-spacer"></div>
           <button class="btn-primary">今すぐ同期</button>
@@ -67,6 +68,11 @@
             <div class="billing-sum-label">Google 広告費合計</div>
             <div class="billing-sum-val">¥620,000</div>
             <div class="billing-sum-note">5店舗 / 最終取得 5/31 09:02</div>
+          </div>
+          <div class="billing-sum-card">
+            <div class="billing-sum-label">LINE 広告費合計</div>
+            <div class="billing-sum-val">¥340,000</div>
+            <div class="billing-sum-note">4店舗 / 最終取得 5/31 09:02</div>
           </div>
           <div class="billing-sum-card">
             <div class="billing-sum-label">連携エラー</div>
@@ -87,6 +93,7 @@
                   <th>店舗名</th><th>区分</th>
                   <th class="col-num">Meta 消化額</th><th>Meta 状態</th>
                   <th class="col-num">Google 消化額</th><th>Google 状態</th>
+                  <th class="col-num">LINE 消化額</th><th>LINE 状態</th>
                   <th>最終取得</th><th>操作</th>
                 </tr>
               </thead>
@@ -95,18 +102,21 @@
                   <td><strong>表参道店</strong></td><td><span class="tag tag-direct">直営</span></td>
                   <td class="col-num">335,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td class="col-num">45,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">95,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
                 </tr>
                 <tr>
                   <td><strong>渋谷店</strong></td><td><span class="tag tag-direct">直営</span></td>
                   <td class="col-num">280,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td class="col-num">40,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">85,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
                 </tr>
                 <tr>
                   <td><strong>大阪梅田店</strong></td><td><span class="tag tag-fc">FC</span></td>
                   <td class="col-num">240,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td class="col-num">65,000</td><td><span class="status-badge status-active">正常</span></td>
+                  <td class="col-num">80,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td>5/31 09:02</td><td><button class="btn-xs">再取得</button></td>
                 </tr>
                 <tr class="row-alert">
@@ -114,6 +124,7 @@
                   <td class="col-num">120,000</td><td><span class="status-badge status-active">正常</span></td>
                   <td class="col-num" style="color:var(--red)">—</td>
                   <td><span class="status-badge status-inactive">エラー</span></td>
+                  <td class="col-num">—</td><td><span class="status-badge status-inactive">未設定</span></td>
                   <td>5/30 09:02</td>
                   <td><div class="action-btns">
                     <button class="btn-xs btn-xs-danger">再取得</button>
@@ -127,19 +138,169 @@
         </div>
       </div>
 
+      <!-- ===== ファネル分析タブ ===== -->
+      <div id="tab-funnel" class="tab-panel">
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>対象月</label>
+            <select class="select-input"><option>2025年5月</option><option>2025年4月</option></select>
+          </div>
+          <div class="filter-spacer"></div>
+          <button class="btn-ghost">CSV ↓</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">ファネル遷移サマリ — 2025年5月</span>
+            <span style="font-size:11px;color:var(--text-3);">▸ グループ行をクリックで詳細を展開</span>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table pl-tbl" id="funnelTable">
+              <thead>
+                <tr>
+                  <th class="col-sticky pl-th-item">項目</th>
+                  <th class="col-num pl-th-store">合計</th>
+                  <th class="col-num pl-th-store">平均</th>
+                  <th class="col-num pl-th-store">中央値</th>
+                  <th class="col-num pl-th-store" style="color:var(--accent);font-weight:700;">表参道店</th>
+                  <th class="col-num pl-th-store">渋谷店</th>
+                  <th class="col-num pl-th-store">新宿店</th>
+                  <th class="col-num pl-th-store">大阪梅田店</th>
+                  <th class="col-num pl-th-store">名古屋栄店</th>
+                  <th class="col-num pl-th-store">心斎橋店</th>
+                  <th class="col-num pl-th-store">福岡天神店</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 広告費合計 -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('ad')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-ad">▸</button> <strong>広告費合計</strong></td>
+                  <td class="col-num">125,095</td><td class="col-num">977</td><td class="col-num">62,547</td>
+                  <td class="col-num">123,666</td><td class="col-num">85,200</td><td class="col-num">72,300</td><td class="col-num">95,400</td><td class="col-num">48,100</td><td class="col-num">61,500</td><td class="col-num">0</td>
+                </tr>
+                <!-- Meta -->
+                <tr data-d="ad" style="display:none;" class="pl-grp-row" onclick="toggleFunnel('meta')">
+                  <td class="col-sticky pl-td-grp" style="padding-left:24px;"><button class="grp-toggle-btn" id="fbtn-meta">▸</button> <strong>Meta</strong></td>
+                  <td class="col-num">123,666</td><td class="col-num">966</td><td class="col-num">123,666</td>
+                  <td class="col-num">123,666</td><td class="col-num">83,000</td><td class="col-num">70,800</td><td class="col-num">93,200</td><td class="col-num">46,500</td><td class="col-num">60,000</td><td class="col-num">0</td>
+                </tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">広告予算</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">消化金額</td><td class="col-num">123,666</td><td class="col-num">966</td><td class="col-num">123,666</td><td class="col-num">123,666</td><td class="col-num">83,000</td><td class="col-num">70,800</td><td class="col-num">93,200</td><td class="col-num">46,500</td><td class="col-num">60,000</td><td class="col-num">0</td></tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">imp</td><td class="col-num">74,476</td><td class="col-num">582</td><td class="col-num">74,476</td><td class="col-num">74,476</td><td class="col-num">52,300</td><td class="col-num">45,800</td><td class="col-num">68,100</td><td class="col-num">31,200</td><td class="col-num">41,500</td><td class="col-num">0</td></tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">CTR</td><td class="col-num">1.98%</td><td class="col-num">0.02%</td><td class="col-num">1.98%</td><td class="col-num">1.98%</td><td class="col-num">2.10%</td><td class="col-num">1.85%</td><td class="col-num">2.05%</td><td class="col-num">1.72%</td><td class="col-num">1.91%</td><td class="col-num">0.00%</td></tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">クリック数</td><td class="col-num">1,472</td><td class="col-num">12</td><td class="col-num">1,472</td><td class="col-num">1,472</td><td class="col-num">1,098</td><td class="col-num">847</td><td class="col-num">1,396</td><td class="col-num">537</td><td class="col-num">793</td><td class="col-num">0</td></tr>
+                <tr data-d="ad meta" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">CPC</td><td class="col-num">84</td><td class="col-num">1</td><td class="col-num">84</td><td class="col-num">84</td><td class="col-num">76</td><td class="col-num">84</td><td class="col-num">67</td><td class="col-num">87</td><td class="col-num">76</td><td class="col-num">0</td></tr>
+                <!-- GSS -->
+                <tr data-d="ad" style="display:none;" class="pl-grp-row" onclick="toggleFunnel('gss')">
+                  <td class="col-sticky pl-td-grp" style="padding-left:24px;"><button class="grp-toggle-btn" id="fbtn-gss">▸</button> <strong>GSS</strong></td>
+                  <td class="col-num">1,429</td><td class="col-num">11</td><td class="col-num">1,429</td>
+                  <td class="col-num">0</td><td class="col-num">2,200</td><td class="col-num">1,500</td><td class="col-num">2,200</td><td class="col-num">1,600</td><td class="col-num">1,500</td><td class="col-num">0</td>
+                </tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">広告予算</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">消化金額</td><td class="col-num">1,429</td><td class="col-num">11</td><td class="col-num">1,429</td><td class="col-num">0</td><td class="col-num">2,200</td><td class="col-num">1,500</td><td class="col-num">2,200</td><td class="col-num">1,600</td><td class="col-num">1,500</td><td class="col-num">0</td></tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">imp</td><td class="col-num">255</td><td class="col-num">2</td><td class="col-num">255</td><td class="col-num">0</td><td class="col-num">380</td><td class="col-num">290</td><td class="col-num">410</td><td class="col-num">220</td><td class="col-num">260</td><td class="col-num">0</td></tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">CTR</td><td class="col-num">6.27%</td><td class="col-num">0.05%</td><td class="col-num">6.27%</td><td class="col-num">0.00%</td><td class="col-num">5.92%</td><td class="col-num">6.55%</td><td class="col-num">6.34%</td><td class="col-num">5.91%</td><td class="col-num">6.15%</td><td class="col-num">0.00%</td></tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">クリック数</td><td class="col-num">16</td><td class="col-num">0</td><td class="col-num">16</td><td class="col-num">0</td><td class="col-num">23</td><td class="col-num">19</td><td class="col-num">26</td><td class="col-num">13</td><td class="col-num">16</td><td class="col-num">0</td></tr>
+                <tr data-d="ad gss" style="display:none;"><td class="col-sticky" style="padding-left:48px;color:var(--text-3);">CPC</td><td class="col-num">89</td><td class="col-num">1</td><td class="col-num">89</td><td class="col-num">0</td><td class="col-num">96</td><td class="col-num">79</td><td class="col-num">85</td><td class="col-num">123</td><td class="col-num">94</td><td class="col-num">0</td></tr>
+
+                <!-- LP -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('lp')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-lp">▸</button> <strong>LP</strong></td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                </tr>
+                <tr data-d="lp" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">PV</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="lp" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">CVR</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td></tr>
+                <tr data-d="lp" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">CTAクリック数</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="lp" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">クリック単価</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+
+                <!-- 予約ツール -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('booking')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-booking">▸</button> <strong>予約ツール</strong></td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                </tr>
+                <tr data-d="booking" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">PV</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="booking" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">CVR</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td></tr>
+                <tr data-d="booking" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約数</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="booking" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約単価</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+
+                <!-- LINE -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('line')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-line">▸</button> <strong>LINE</strong></td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                </tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">友達追加数</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">友達追加単価</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td><td class="col-num">0</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">問い合わせ率</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td><td class="col-num">0.00%</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">問い合わせ数</td><td class="col-num">1,163</td><td class="col-num">9</td><td class="col-num">9</td><td class="col-num">22</td><td class="col-num">18</td><td class="col-num">14</td><td class="col-num">31</td><td class="col-num">11</td><td class="col-num">16</td><td class="col-num">5</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">問い合わせ単価</td><td class="col-num">108</td><td class="col-num">45</td><td class="col-num">2,890</td><td class="col-num">5,621</td><td class="col-num">4,822</td><td class="col-num">5,057</td><td class="col-num">3,006</td><td class="col-num">4,227</td><td class="col-num">3,750</td><td class="col-num">0</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約率</td><td class="col-num">71.28%</td><td class="col-num">57.54%</td><td class="col-num">75.00%</td><td class="col-num">95.45%</td><td class="col-num">88.89%</td><td class="col-num">78.57%</td><td class="col-num">67.74%</td><td class="col-num">72.73%</td><td class="col-num">81.25%</td><td class="col-num">80.00%</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約数</td><td class="col-num">829</td><td class="col-num">6</td><td class="col-num">6</td><td class="col-num">21</td><td class="col-num">16</td><td class="col-num">11</td><td class="col-num">21</td><td class="col-num">8</td><td class="col-num">13</td><td class="col-num">4</td></tr>
+                <tr data-d="line" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約単価</td><td class="col-num">151</td><td class="col-num">47</td><td class="col-num">3,034</td><td class="col-num">5,889</td><td class="col-num">5,188</td><td class="col-num">6,436</td><td class="col-num">4,438</td><td class="col-num">5,813</td><td class="col-num">4,615</td><td class="col-num">0</td></tr>
+
+                <!-- HPB -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('hpb')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-hpb">▸</button> <strong>HPB</strong></td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                  <td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td><td class="col-num">—</td>
+                </tr>
+                <tr data-d="hpb" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">予約数</td><td class="col-num">151</td><td class="col-num">1</td><td class="col-num">7</td><td class="col-num">21</td><td class="col-num">18</td><td class="col-num">14</td><td class="col-num">28</td><td class="col-num">9</td><td class="col-num">12</td><td class="col-num">4</td></tr>
+                <tr data-d="hpb" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">来店数</td><td class="col-num">164</td><td class="col-num">1</td><td class="col-num">5</td><td class="col-num">21</td><td class="col-num">19</td><td class="col-num">15</td><td class="col-num">30</td><td class="col-num">10</td><td class="col-num">14</td><td class="col-num">4</td></tr>
+
+                <!-- 総客数 -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('guests')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-guests">▸</button> <strong>総客数</strong></td>
+                  <td class="col-num">14,262</td><td class="col-num">111</td><td class="col-num">118</td>
+                  <td class="col-num">141</td><td class="col-num">128</td><td class="col-num">115</td><td class="col-num">134</td><td class="col-num">98</td><td class="col-num">122</td><td class="col-num">108</td>
+                </tr>
+                <tr data-d="guests" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">新規客数</td><td class="col-num">900</td><td class="col-num">7</td><td class="col-num">7</td><td class="col-num">17</td><td class="col-num">14</td><td class="col-num">10</td><td class="col-num">19</td><td class="col-num">8</td><td class="col-num">12</td><td class="col-num">2</td></tr>
+                <tr data-d="guests" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">既存客数</td><td class="col-num">13,362</td><td class="col-num">104</td><td class="col-num">110</td><td class="col-num">124</td><td class="col-num">114</td><td class="col-num">105</td><td class="col-num">115</td><td class="col-num">90</td><td class="col-num">110</td><td class="col-num">106</td></tr>
+
+                <!-- 次回予約数合計 -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('nextre')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-nextre">▸</button> <strong>次回予約数合計</strong></td>
+                  <td class="col-num">12,441</td><td class="col-num">97</td><td class="col-num">111</td>
+                  <td class="col-num">128</td><td class="col-num">115</td><td class="col-num">108</td><td class="col-num">122</td><td class="col-num">88</td><td class="col-num">114</td><td class="col-num">97</td>
+                </tr>
+                <tr data-d="nextre" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">新規次回予約数</td><td class="col-num">844</td><td class="col-num">7</td><td class="col-num">5</td><td class="col-num">13</td><td class="col-num">11</td><td class="col-num">8</td><td class="col-num">15</td><td class="col-num">6</td><td class="col-num">9</td><td class="col-num">1</td></tr>
+                <tr data-d="nextre" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">既存次回予約数</td><td class="col-num">11,734</td><td class="col-num">92</td><td class="col-num">105</td><td class="col-num">115</td><td class="col-num">104</td><td class="col-num">100</td><td class="col-num">107</td><td class="col-num">82</td><td class="col-num">105</td><td class="col-num">96</td></tr>
+
+                <!-- 次回予約率合計 -->
+                <tr class="pl-grp-row" onclick="toggleFunnel('nextrate')">
+                  <td class="col-sticky pl-td-grp"><button class="grp-toggle-btn" id="fbtn-nextrate">▸</button> <strong>次回予約率合計</strong></td>
+                  <td class="col-num">9,726.0%</td><td class="col-num">76.0%</td><td class="col-num">92.6%</td>
+                  <td class="col-num">90.8%</td><td class="col-num">89.8%</td><td class="col-num">93.9%</td><td class="col-num">91.0%</td><td class="col-num">89.8%</td><td class="col-num">93.4%</td><td class="col-num">89.8%</td>
+                </tr>
+                <tr data-d="nextrate" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">新規次回予約率</td><td class="col-num">9,660.9%</td><td class="col-num">75.5%</td><td class="col-num">75.0%</td><td class="col-num">76.5%</td><td class="col-num">78.6%</td><td class="col-num">80.0%</td><td class="col-num">78.9%</td><td class="col-num">75.0%</td><td class="col-num">75.0%</td><td class="col-num">50.0%</td></tr>
+                <tr data-d="nextrate" style="display:none;"><td class="col-sticky" style="padding-left:24px;color:var(--text-3);">既存次回予約率</td><td class="col-num">12,695.1%</td><td class="col-num">99.2%</td><td class="col-num">94.1%</td><td class="col-num">92.7%</td><td class="col-num">91.2%</td><td class="col-num">95.2%</td><td class="col-num">93.0%</td><td class="col-num">91.1%</td><td class="col-num">95.5%</td><td class="col-num">90.6%</td></tr>
+
+                <!-- 稼働率合計 -->
+                <tr class="pl-grp-row">
+                  <td class="col-sticky pl-td-grp" style="padding-left:16px;"><strong>稼働率合計</strong></td>
+                  <td class="col-num">88.2%</td><td class="col-num">155.2%</td><td class="col-num">78.6%</td>
+                  <td class="col-num">59.3%</td><td class="col-num">82.1%</td><td class="col-num">76.4%</td><td class="col-num">84.3%</td><td class="col-num">163.3%</td><td class="col-num">78.9%</td><td class="col-num">70.2%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== 予算→API反映タブ ===== -->
       <div id="tab-reflect" class="tab-panel">
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:16px;text-align:center;padding:40px 20px;">
           <div style="font-size:40px;">🚧</div>
           <div style="font-size:17px;font-weight:700;color:var(--text-1);">次スコープで開発予定</div>
           <div style="font-size:13px;color:var(--text-3);max-width:480px;line-height:1.7;">
-            予算管理で確定した月次予算を Meta / Google Ads の日予算へ自動反映する機能は、現在のスコープには含まれていません。<br>
+            予算管理で確定した月次予算を Meta / Google Ads / LINE Ads の日予算へ自動反映する機能は、現在のスコープには含まれていません。<br>
             次スコープにて、店舗別の反映ステータス表示・一括反映・個別再反映ボタンを実装予定です。
           </div>
           <div style="background:var(--surface-3);border:1px solid var(--border-mid);border-radius:8px;padding:12px 20px;font-size:12px;color:var(--text-3);text-align:left;max-width:480px;width:100%;">
             <div style="font-weight:700;color:var(--text-2);margin-bottom:8px;">次スコープで実装する内容</div>
             <ul style="margin:0;padding-left:18px;line-height:2;">
-              <li>店舗×媒体（Meta / Google）ごとの反映ステータス表示</li>
+              <li>店舗×媒体（Meta / Google / LINE）ごとの反映ステータス表示</li>
               <li>確定予算 → 日予算換算（月額 ÷ 稼働日数）の表示</li>
               <li>全店舗一括反映ボタン</li>
               <li>個別店舗の再反映・エラー時の再試行</li>
@@ -160,53 +321,60 @@
             <button class="btn-primary" onclick="saveMappings()">変更を保存</button>
           </div>
           <div style="padding:0 20px 16px;">
-            <div style="display:grid;grid-template-columns:130px 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:2px solid var(--border-mid);font-size:11px;font-weight:700;color:var(--text-3);">
-              <span>店舗名</span><span>Meta 広告セットID</span><span>Google キャンペーンID</span><span>状態</span>
+            <div style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;padding:8px 0;border-bottom:2px solid var(--border-mid);font-size:11px;font-weight:700;color:var(--text-3);">
+              <span>店舗名</span><span>Meta 広告セットID</span><span>Google キャンペーンID</span><span>LINE キャンペーンID</span><span>状態</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">表参道店</span>
               <input class="mapping-input" value="act_123456789_adset_001" />
               <input class="mapping-input" value="9876543210" />
+              <input class="mapping-input" value="LINE_C_00101" />
               <span class="status-badge status-active">正常</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">渋谷店</span>
               <input class="mapping-input" value="act_123456789_adset_002" />
               <input class="mapping-input" value="8765432109" />
+              <input class="mapping-input" value="LINE_C_00102" />
               <span class="status-badge status-active">正常</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">新宿店</span>
               <input class="mapping-input" value="act_123456789_adset_003" />
               <input class="mapping-input" value="7654321098" />
-              <span class="status-badge status-active">正常</span>
+              <input class="mapping-input" value="" placeholder="未設定 — IDを入力" />
+              <span class="status-badge status-inactive">未設定</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">大阪梅田店</span>
               <input class="mapping-input" value="act_987654321_adset_001" />
               <input class="mapping-input" value="6543210987" />
+              <input class="mapping-input" value="LINE_C_00201" />
               <span class="status-badge status-active">正常</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">名古屋栄店</span>
               <input class="mapping-input" value="act_987654321_adset_002" />
               <input class="mapping-input" value="5432109876" />
-              <span class="status-badge status-active">正常</span>
+              <input class="mapping-input" value="" placeholder="未設定 — IDを入力" />
+              <span class="status-badge status-inactive">未設定</span>
             </div>
-            <div class="mapping-edit-row">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;">
               <span class="mapping-store-name">心斎橋店</span>
               <input class="mapping-input" value="act_987654321_adset_003" />
               <input class="mapping-input" value="4321098765" />
+              <input class="mapping-input" value="LINE_C_00301" />
               <span class="status-badge status-active">正常</span>
             </div>
-            <div class="mapping-edit-row" style="background:#fff5f5;border-radius:6px;padding:10px;border:1px solid #fca5a5;">
+            <div class="mapping-edit-row" style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 80px;gap:8px;align-items:center;background:#fff5f5;border-radius:6px;padding:10px;border:1px solid #fca5a5;">
               <span class="mapping-store-name" style="color:var(--red)">福岡天神店</span>
               <input class="mapping-input" value="act_987654321_adset_007" style="border-color:#fca5a5;" />
+              <input class="mapping-input" value="" placeholder="未設定 — IDを入力" style="border-color:#fca5a5;" />
               <input class="mapping-input" value="" placeholder="未設定 — IDを入力" style="border-color:#fca5a5;" />
               <span class="status-badge status-inactive">エラー</span>
             </div>
           </div>
-          <div class="table-note">※ IDはMeta Business Manager / Google Ads管理画面で確認できます | 変更後は「変更を保存」をクリックし、消化実績タブで再取得してください</div>
+          <div class="table-note">※ IDはMeta Business Manager / Google Ads / LINE Ads Manager で確認できます | 変更後は「変更を保存」をクリックし、消化実績タブで再取得してください</div>
         </div>
       </div>
 
@@ -219,7 +387,7 @@
       document.querySelectorAll('.page-tab').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('onclick') === `switchAdsTab('${tab}')`);
       });
-      ['fetch','reflect','mapping'].forEach(k => {
+      ['fetch','funnel','reflect','mapping'].forEach(k => {
         const el = document.getElementById('tab-' + k);
         if (el) el.classList.toggle('active', k === tab);
       });
@@ -229,6 +397,21 @@
     }
     function reflectStore(name) {
       alert(name + ' のGoogle Ads APIへの反映を再試行しました（本実装時）\nIDを正しく設定後に再実行してください');
+    }
+    const FUNNEL_STATE = {};
+    function toggleFunnel(grpId) {
+      FUNNEL_STATE[grpId] = !FUNNEL_STATE[grpId];
+      const show = FUNNEL_STATE[grpId];
+      document.querySelectorAll(`[data-d]`).forEach(row => {
+        const groups = row.getAttribute('data-d').split(' ');
+        if (groups.includes(grpId)) {
+          // only show if ALL parent groups are also open
+          const allOpen = groups.every(g => g === grpId || FUNNEL_STATE[g]);
+          row.style.display = (show && allOpen) ? '' : 'none';
+        }
+      });
+      const btn = document.getElementById('fbtn-' + grpId);
+      if (btn) btn.textContent = show ? '▾' : '▸';
     }
     function saveMappings() {
       alert('広告ID対応テーブルを保存しました（本実装時）\n消化実績タブで再取得してください');
